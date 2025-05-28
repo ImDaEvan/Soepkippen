@@ -40,14 +40,14 @@ jobs:
       - name: Build and test
         uses: docker/build-push-action@v6
         with:
-          file: TomApi/Dockerfile
+          file: SoepkipAPI/Dockerfile
           target: build
           load: true
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          file: TomApi/Dockerfile
+          file: SoepkipAPI/Dockerfile
           platforms: linux/amd64
           push: true
           target: final
@@ -60,7 +60,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull ${{ vars.DOCKER_USERNAME }}/tom-api:latest
-            docker stop tom-api || true
-            docker rm tom-api || true
-            eval "docker run -d $(echo '${{vars.PUBLISH_PORTS}}' | sed 's/,/ -p /g' | sed 's/^/-p /') -e CONNECTION_STRING_MYSQL='${{ secrets.CONNECTION_STRING_MYSQL }}' -e CONNECTION_STRING_SQL='${{ secrets.CONNECTION_STRING_SQL }}' --name tom-api ${{ vars.DOCKER_USERNAME }}/tom-api:latest"
+            docker pull ${{ vars.DOCKER_USERNAME }}/soepkip-api:latest
+            docker stop soepkip-api || true
+            docker rm soepkip-api || true
+            eval "docker run -d $(echo '${{vars.PUBLISH_PORTS}}' | sed 's/,/ -p /g' | sed 's/^/-p /') -e CONNECTION_STRING_MYSQL='${{ secrets.CONNECTION_STRING_MYSQL }}' -e CONNECTION_STRING_SQL='${{ secrets.CONNECTION_STRING_SQL }}' --name soepkip-api ${{ vars.DOCKER_USERNAME }}/soepkip-api:latest"

@@ -7,7 +7,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["SoepkipAPI.csproj", "./"]
+COPY ["./SoepkipApi/SoepkipAPI.csproj", "./"]
 RUN dotnet restore "SoepkipAPI.csproj"
 COPY . .
 WORKDIR "/src/"

@@ -11,7 +11,8 @@ COPY ["SoepkipAPI/SoepkipAPI.csproj", "./"]
 RUN dotnet restore "SoepkipAPI.csproj"
 COPY . .
 WORKDIR "/src/"
-RUN dotnet build "./SoepkipAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./SoepkipAPI.csproj" -c $BUILD_CONFIGURATION
+
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release

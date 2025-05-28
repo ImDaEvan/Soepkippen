@@ -4,6 +4,7 @@ env: # Change these settings when you need to
   ARTIFACT_NAME: WebApi
   DOTNET_CORE_VERSION: 9.0.x #Tests are 9.0, api is 8.0
   PUBLISH_DIRECTORY: "./out/publish"
+  IMAGE_NAME: soepkip-api
 on:
   push:
     branches:
@@ -39,6 +40,7 @@ jobs:
       - name: Build and test
         uses: docker/build-push-action@v6
         with:
+          contex: SoepkipAPI
           file: SoepkipAPI/Dockerfile
           target: build
           load: true
@@ -46,11 +48,12 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
+          context: SoepkipAPI
           file: SoepkipAPI/Dockerfile
           platforms: linux/amd64
           push: true
           target: final
-          tags: ${{ vars.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Pull the image to VM
         uses: appleboy/ssh-action@v1.0.0
@@ -59,7 +62,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull ${{ vars.DOCKER_USERNAME }}/soepkip-api:latest
+            docker pull ${{ vars.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
             docker stop soepkip-api || true
             docker rm soepkip-api || true
             eval "docker run -d $(echo '${{vars.PUBLISH_PORTS}}' | sed 's/,/ -p /g' | sed 's/^/-p /') -e CONNECTION_STRING_MYSQL='${{ secrets.CONNECTION_STRING_MYSQL }}' -e CONNECTION_STRING_SQL='${{ secrets.CONNECTION_STRING_SQL }}' --name soepkip-api ${{ vars.DOCKER_USERNAME }}/soepkip-api:latest"

@@ -40,16 +40,16 @@ jobs:
       - name: Build and test
         uses: docker/build-push-action@v6
         with:
-          contex: SoepkipAPI
-          file: Dockerfile
+          contex: ./SoepkipAPI
+          file: SoepkipAPI/Dockerfile
           target: build
           load: true
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: SoepkipAPI
-          file: Dockerfile
+          context: ./SoepkipAPI
+          file: SoepkipAPI/Dockerfile
           platforms: linux/amd64
           push: true
           target: final

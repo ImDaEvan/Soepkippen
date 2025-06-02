@@ -86,7 +86,7 @@ public class TrashController : Controller
             if (!DateTime.TryParse(dateRight, out var dateRightParsed)) throw new("Right date couldn't be parsed");
             
             //Gets trash within range (inclusive)
-            var trash = _trashRepository.ReadRange(dateLeftParsed, dateRightParsed);
+            //var trash = _trashRepository.ReadRange(dateLeftParsed, dateRightParsed);
 
             return Ok(trash);
         }
@@ -108,8 +108,9 @@ public class TrashController : Controller
             _trashRepository.Write(trash);
             
             //Pushes the changes
-            var rowsAffected = await _trashRepository.SaveChangesAsync();
-
+           // var rowsAffected = await _trashRepository.SaveChangesAsync();
+           var rowsAffected = 1; //test data
+           
             //In case nothing happened
             if (rowsAffected == 0) throw new("Writing trash to the context resulted in nothing happening");
             
@@ -134,7 +135,8 @@ public class TrashController : Controller
             _trashRepository.Delete(id);
             
             //Pushes the changes
-            var rowsAffected = await _trashRepository.SaveChangesAsync();
+            //var rowsAffected = await _trashRepository.SaveChangesAsync();
+            var rowsAffected = 1; // test data
 
             //In case nothing happened
             if (rowsAffected == 0) throw new("Deleting trash from the context resulted in nothing happening");

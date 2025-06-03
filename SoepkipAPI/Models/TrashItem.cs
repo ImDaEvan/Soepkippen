@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace SoepkipAPI.Models;
 
@@ -10,10 +11,15 @@ public class TrashItem
     public float confidence { get; set; }
     public float longditude { get; set; }
     public float latitude { get; set; }
-    
+
     //enriched values
+    [JsonIgnore]
     public float? feels_like_temp_celsius { get; set; }
+    [JsonIgnore]
     public float? actual_temp_celsius { get; set; }
-    public float? wind_force_bft { get; set; }
-    public float? wind_direction { get; set; }
+    [JsonIgnore]
+    public float? wind_force_kmh { get; set; }
+    [JsonIgnore]
+    public string? wind_direction { get; set; }
+    
 }

@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using SoepkipAPI.Data.Context;
 using SoepkipAPI.Data.Interfaces;
 using SoepkipAPI.Data.Repository;
+using SoepkipAPI.Controllers;
+using SoepkipAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,7 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient<WeatherService>();
 
 //Depencency injection
 builder.Services.AddTransient<ITrashRepository, TrashRepository>();

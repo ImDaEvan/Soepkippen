@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SoepkipAPI.Data.Interfaces;
 using SoepkipAPI.Models;
+using SoepkipAPI.Services;
 
 namespace SoepkipAPI.Controllers;
 
@@ -13,11 +14,13 @@ public class TrashController : Controller
     
     //Used for logging within the docker container
     private readonly ILogger<TrashController> _logger;
+    private readonly WeatherService _weatherService;
 
-    public TrashController(ITrashRepository trashRepository, ILogger<TrashController> logger)
+    public TrashController(ITrashRepository trashRepository, ILogger<TrashController> logger, WeatherService weatherService)
     {
         _trashRepository = trashRepository;
         _logger = logger;
+        _weatherService = weatherService;
     }
     
     //GET: api/trash/all
@@ -84,9 +87,9 @@ public class TrashController : Controller
             //Parse the left and right date to datetimes
             if (!DateTime.TryParse(dateLeft, out var dateLeftParsed)) throw new("Left date couldn't be parsed");
             if (!DateTime.TryParse(dateRight, out var dateRightParsed)) throw new("Right date couldn't be parsed");
-            
+
             //Gets trash within range (inclusive)
-            //var trash = _trashRepository.ReadRange(dateLeftParsed, dateRightParsed);
+            var trash = _trashRepository.ReadRange(dateLeftParsed, dateRightParsed);
 
             return Ok(trash);
         }
@@ -106,10 +109,22 @@ public class TrashController : Controller
         {
             //Stages the writing to the data context
             _trashRepository.Write(trash);
-            
+
+            // Enriches the trash data with weather data
+            var weather = await _weatherService.GetWeatherAsync("Breda"); // of dynamisch op basis van locatie
+
+            if (weather != null)
+            {
+                trash.actual_temp_celsius = weather.temp;
+                trash.feels_like_temp_celsius = weather.gtemp;
+                trash.wind_force_kmh = weather.windkmh;
+                trash.wind_direction = weather.windr;
+            }
+
+
             //Pushes the changes
-           // var rowsAffected = await _trashRepository.SaveChangesAsync();
-           var rowsAffected = 1; //test data
+            // var rowsAffected = await _trashRepository.SaveChangesAsync();
+            var rowsAffected = 1; //test data
            
             //In case nothing happened
             if (rowsAffected == 0) throw new("Writing trash to the context resulted in nothing happening");

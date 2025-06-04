@@ -27,9 +27,7 @@ public class TrashController : Controller
         try
         {
             //Read trash from repository
-            //var trash = _trashRepository.ReadAll();
-            
-            var trash = new List<TrashItem>(); //testdata
+            var trash = _trashRepository.ReadAll();
             
             //Returns trash data
             return Ok(trash);
@@ -49,17 +47,7 @@ public class TrashController : Controller
         try
         {
             //Gets trash at id
-            //var trash = _trashRepository.Read(id);
-
-            var trash = new TrashItem() //testdata
-            {
-                id = Guid.NewGuid().ToString(),
-                confidence = 0.9f,
-                latitude = 5,
-                longditude = 87,
-                timestamp = DateTime.Now,
-                type = "peuk"
-            };
+            var trash = _trashRepository.Read(id);
             
             //Sends notfound if none is found with id
             if (trash == null) return NotFound();
@@ -86,7 +74,7 @@ public class TrashController : Controller
             if (!DateTime.TryParse(dateRight, out var dateRightParsed)) throw new("Right date couldn't be parsed");
             
             //Gets trash within range (inclusive)
-            //var trash = _trashRepository.ReadRange(dateLeftParsed, dateRightParsed);
+            var trash = _trashRepository.ReadRange(dateLeftParsed, dateRightParsed);
 
             return Ok(trash);
         }
@@ -108,8 +96,7 @@ public class TrashController : Controller
             _trashRepository.Write(trash);
             
             //Pushes the changes
-           // var rowsAffected = await _trashRepository.SaveChangesAsync();
-           var rowsAffected = 1; //test data
+           var rowsAffected = await _trashRepository.SaveChangesAsync();
            
             //In case nothing happened
             if (rowsAffected == 0) throw new("Writing trash to the context resulted in nothing happening");
@@ -135,8 +122,7 @@ public class TrashController : Controller
             _trashRepository.Delete(id);
             
             //Pushes the changes
-            //var rowsAffected = await _trashRepository.SaveChangesAsync();
-            var rowsAffected = 1; // test data
+            var rowsAffected = await _trashRepository.SaveChangesAsync();
 
             //In case nothing happened
             if (rowsAffected == 0) throw new("Deleting trash from the context resulted in nothing happening");

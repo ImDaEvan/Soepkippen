@@ -20,49 +20,6 @@ public class TrashController : Controller
         _logger = logger;
     }
     
-    //GET: api/trash/all
-    [HttpGet("all")]
-    public IActionResult ReadAll()
-    {
-        try
-        {
-            //Read trash from repository
-            var trash = _trashRepository.ReadAll();
-            
-            //Returns trash data
-            return Ok(trash);
-        }
-        catch (Exception e)
-        {
-            //Logs error and returns bad request
-            _logger.LogError($"{e.Message}\n{e.InnerException}");
-            return BadRequest();
-        }
-    }
-    
-    //GET: api/trash/GUID
-    [HttpGet("{id}")]
-    public IActionResult Read(string id)
-    {
-        try
-        {
-            //Gets trash at id
-            var trash = _trashRepository.Read(id);
-            
-            //Sends notfound if none is found with id
-            if (trash == null) return NotFound();
-            
-            //Returns trash data
-            return Ok(trash);
-        }
-        catch (Exception e)
-        {
-            //Logs error and returns bad request
-            _logger.LogError($"{e.Message}\n{e.InnerException}");
-            return BadRequest();
-        }
-    }
-    
     //GET: api/trash?dateLeft=a&dateRight=b
     [HttpGet]
     public IActionResult ReadRange(string dateLeft, string dateRight)
@@ -100,32 +57,6 @@ public class TrashController : Controller
            
             //In case nothing happened
             if (rowsAffected == 0) throw new("Writing trash to the context resulted in nothing happening");
-            
-            //Send back how many rows were affected (should always be 1)
-            return Ok(rowsAffected);
-        }
-        catch (Exception e)
-        {
-            //Logs error and returns bad request
-            _logger.LogError($"{e.Message}\n{e.InnerException}");
-            return BadRequest();
-        }
-    }
-    
-    //PUT: api/trash
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
-    {
-        try
-        {
-            //Stages the deletion to the data context
-            _trashRepository.Delete(id);
-            
-            //Pushes the changes
-            var rowsAffected = await _trashRepository.SaveChangesAsync();
-
-            //In case nothing happened
-            if (rowsAffected == 0) throw new("Deleting trash from the context resulted in nothing happening");
             
             //Send back how many rows were affected (should always be 1)
             return Ok(rowsAffected);

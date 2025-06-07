@@ -21,5 +21,5 @@ public class TrashRepository : RepositoryBase<TrashItem>, ITrashRepository
     {
         return _dbSet.Where(x => x.timestamp >= dateLeft && x.timestamp <= dateRight)
             .ToList();
-    }
+       }
 }

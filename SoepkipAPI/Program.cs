@@ -36,9 +36,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddTransient<ITrashRepository, TrashRepository>();
 
 //Add database connection
+var connectionString =
+    builder.Configuration.GetConnectionString(Environment.GetEnvironmentVariable("CONNECTION_STRING_MYSQL") ??
+                                              "DefaultConnection");
 builder.Services.AddDbContext<TrashContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString(Environment.GetEnvironmentVariable("CONNECTION_STRING_MYSQL") ?? "DefaultConnection"));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
 var app = builder.Build();

@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using SoepkipAPI.Data.Context;
 using SoepkipAPI.Data.Interfaces;
 using SoepkipAPI.Data.Repository;
-using SoepkipAPI.Controllers;
 using SoepkipAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

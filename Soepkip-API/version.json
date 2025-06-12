@@ -1,19 +1,8 @@
 {
-  "1": {
-    "version": "1.0.0",
-    "changelog": "EXAMPLE:Initial release"
-  },
-  "2": {
-    "version": "1.0.1",
-    "changelog": "EXAMPLE:Bug fixes and added endpoint GET /trash"
-  },
-  "3": {
-    "version": "1.0.2",
-    "changelog": "EXAMPLE:Bug fixes and added endpoint POST /trash"
-  },
-  "4": {
-    "version": "1.0.3",
-    "changelog": "Added Version/full endpoint"
-  },
-  "current": "4"
+  "1.0.0": "Initial release",
+  "1.0.1": "none",
+  "1.0.2": "none",
+  "1.0.3": "Added /api/changelog endpoint , but /api/changelog/latest still returned all the endpoints.",
+  "1.0.4": "Changed /api/changelog to accept a query param like: ?version=1.0.4    ,    /api/changelog/latest now returns the latest version and changelog.    ,    -/api/changelog/all now returns all versions and changelogs.",
+  "current": "1.0.4"
 }

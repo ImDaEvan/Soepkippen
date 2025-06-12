@@ -1,0 +1,6 @@
+@SoepkipAPI_HostAddress = http://localhost:5267
+
+GET {{SoepkipAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -58,4 +58,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//Landing page
+app.MapGet("/", () => Results.Content("Api up and running", "text/html"));
+
 app.Run();

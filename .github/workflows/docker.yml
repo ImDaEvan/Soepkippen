@@ -7,7 +7,7 @@ env: # Change these settings when you need to
 on:
   push:
     branches:
-      - Development
+      - main
 
 jobs:
 #  unit-tests:

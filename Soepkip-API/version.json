@@ -1,0 +1,19 @@
+{
+  "1": {
+    "version": "1.0.0",
+    "changelog": "EXAMPLE:Initial release"
+  },
+  "2": {
+    "version": "1.0.1",
+    "changelog": "EXAMPLE:Bug fixes and added endpoint GET /trash"
+  },
+  "3": {
+    "version": "1.0.2",
+    "changelog": "EXAMPLE:Bug fixes and added endpoint POST /trash"
+  },
+  "4": {
+    "version": "1.0.3",
+    "changelog": "Added Version/full endpoint"
+  },
+  "current": "4"
+}

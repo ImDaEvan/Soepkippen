@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SoepkipAPI.Models;
 using SoepkipAPI.Services;
 
 namespace SoepkipAPI.Controllers;
@@ -25,15 +26,13 @@ public class WeatherTestController : ControllerBase
             if (weather == null)
                 return StatusCode(503, "Geen weerdata ontvangen van de API.");
 
-            return Ok(new
+            return Ok(new TrashItem()
             {
-                Temperature = weather.temp,
-                FeelsLike = weather.gtemp,
-                WindSpeedKmh = weather.windkmh,
-                WindDirection = weather.windr,
-                Date = weather.datum,
-                Time = weather.tijd,
-                Timestamp = weather.Timestamp
+                timestamp = weather.DateTime,
+                feels_like_temp_celsius = weather.gtemp,
+                actual_temp_celsius = weather.temp,
+                wind_force_bft = weather.windms, //TODO: convert ms to bft
+                wind_direction = weather.windrgr,
             });
         }
         catch (Exception ex)

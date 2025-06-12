@@ -56,8 +56,8 @@ public class TrashController : Controller
             {
                 trash.actual_temp_celsius = weather.temp;
                 trash.feels_like_temp_celsius = weather.gtemp;
-                trash.wind_force_kmh = weather.windkmh;
-                trash.wind_direction = weather.windr;
+                trash.wind_force_bft = weather.windms;
+                trash.wind_direction = weather.windrgr;
             }
 
             var rowsAffected = await _trashRepository.SaveChangesAsync();

@@ -38,7 +38,7 @@ public class TrashController : Controller
         catch (Exception e)
         {
             _logger.LogError($"{e.Message}\n{e.InnerException}");
-            return BadRequest();
+            return BadRequest($"Something went wrong: {e.Message}");
         }
     }
 
@@ -69,7 +69,7 @@ public class TrashController : Controller
         catch (Exception e)
         {
             _logger.LogError($"{e.Message}\n{e.InnerException}");
-            return BadRequest();
+            return BadRequest($"Something went wrong: {e.Message}");
         }
     }
 }

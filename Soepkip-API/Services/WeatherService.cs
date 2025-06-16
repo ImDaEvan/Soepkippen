@@ -23,6 +23,9 @@ public class WeatherService
         var json = await response.Content.ReadAsStringAsync();
         var parsed = JsonConvert.DeserializeObject<WeatherResponse>(json);
 
+        var windms = parsed.liveweer.FirstOrDefault().WindMs;
+        parsed.liveweer.FirstOrDefault()!.WindBft = (float)Math.Ceiling(Math.Cbrt(Math.Pow(windms / 0.836f, 2))); //convert ms to bft
+
         return parsed.liveweer.FirstOrDefault();
     }
 }

@@ -35,6 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 //Depencency injection
 builder.Services.AddTransient<ITrashRepository, TrashRepository>();
+builder.Services.AddTransient<IWeatherService, WeatherService>();
 
 //Add database connection
 var connectionString =

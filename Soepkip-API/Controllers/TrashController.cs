@@ -11,9 +11,9 @@ public class TrashController : Controller
 {
     private readonly ITrashRepository _trashRepository;
     private readonly ILogger<TrashController> _logger;
-    private readonly WeatherService _weatherService;
+    private readonly IWeatherService _weatherService;
 
-    public TrashController(ITrashRepository trashRepository, ILogger<TrashController> logger, WeatherService weatherService)
+    public TrashController(ITrashRepository trashRepository, ILogger<TrashController> logger, IWeatherService weatherService)
     {
         _trashRepository = trashRepository;
         _logger = logger;

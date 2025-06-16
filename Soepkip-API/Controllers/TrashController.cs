@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SoepkipAPI.Data.Interfaces;
 using SoepkipAPI.Models;
 using SoepkipAPI.Services;
@@ -13,6 +14,8 @@ public class TrashController : Controller
     private readonly ILogger<TrashController> _logger;
     private readonly WeatherService _weatherService;
 
+    public record MessageResponse(string Message);
+
     public TrashController(ITrashRepository trashRepository, ILogger<TrashController> logger, WeatherService weatherService)
     {
         _trashRepository = trashRepository;
@@ -20,25 +23,50 @@ public class TrashController : Controller
         _weatherService = weatherService;
     }
 
-    // GET: api/trash?dateLeft=a&dateRight=b
+    /// <summary>
+    /// Retrieves all trash detections between <paramref name="dateLeft"/> and <paramref name="dateRight"/>.
+    /// </summary>
+    /// <param name="dateLeft"></param>
+    /// <param name="dateRight"></param>
+    /// <returns></returns>
+    /// <response code = "400">Either the date was in an invalid format or dateLeft > dateRight.</response>
+    /// <response code = "401">Unauthorized access.</response>
+    /// <response code = "404">No trash detections found in the specified range.</response>
+
     [HttpGet]
-    public IActionResult ReadRange(string dateLeft, string dateRight)
+    [Authorize]
+    [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status404NotFound)]
+    public IActionResult GetTrash([FromQuery] string dateLeft, [FromQuery] string dateRight)
     {
         try
         {
-            if (!DateTime.TryParse(dateLeft, out var dateLeftParsed))
-                throw new("Left date couldn't be parsed");
+            if (!_trashRepository.TryParseIsoUtc(dateLeft, out var from)) // Fixed by removing the incorrect static call
+            {
+                return BadRequest(new MessageResponse("Left date couldn't be parsed"));
+            }
+            if (!_trashRepository.TryParseIsoUtc(dateRight, out var to)) // Fixed by removing the incorrect static call
+            {
+                return BadRequest(new MessageResponse("dateRight is in an invalid format!"));
+            }
+            if (from > to)
+            {
+                return BadRequest(new MessageResponse("dateLeft must be earlier than dateRight!"));
+            }
 
-            if (!DateTime.TryParse(dateRight, out var dateRightParsed))
-                throw new("Right date couldn't be parsed");
+            var detections = _trashRepository.ReadRange(from, to);
 
-            var trash = _trashRepository.ReadRange(dateLeftParsed, dateRightParsed);
-            return Ok(trash);
+            if (detections == null || !detections.Any())
+            {
+                return NotFound(new MessageResponse("no trash found at date range"));
+            }
+
+            return Ok(detections);
         }
-        catch (Exception e)
+        catch
         {
-            _logger.LogError($"{e.Message}\n{e.InnerException}");
-            return BadRequest();
+            _logger.LogError("An error occurred while retrieving trash detections.");
+            return BadRequest(new MessageResponse("An error occurred while processing your request."));
         }
     }
 

@@ -78,7 +78,7 @@ namespace SoepkipAPI.tests
         }
 
         [TestMethod]
-        public void NoTrashFound_ReturnsNotFound()
+        public void NoTrashFound_ReturnsOk_WithEmptyList()
         {
             // Arrange
             var from = new DateTime(2025, 6, 1, 0, 0, 0, DateTimeKind.Utc);

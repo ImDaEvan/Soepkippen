@@ -49,7 +49,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         //Sensoring key
         else if (key == _config["Jwt:SensoringKey"])
         {
-            credentials = new SigningCredentials(_privateKeyMonitoring, SecurityAlgorithms.HmacSha256)
+            credentials = new SigningCredentials(_privateKeySensoring, SecurityAlgorithms.HmacSha256)
             {
                 CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
             };

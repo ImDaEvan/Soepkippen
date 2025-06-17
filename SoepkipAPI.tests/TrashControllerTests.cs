@@ -12,6 +12,7 @@ namespace SoepkipAPI.tests
     [TestClass]
     public sealed class TrashControllerTests
     {
+        public TestContext? TestContext { get; set; }
         private const string ISO = "yyyy-MM-dd'T'HH:mm:ss.fff'Z'";
         private Mock<ITrashRepository> _repo = null!;
         private Mock<ILogger<TrashController>> _log = null!;

@@ -45,7 +45,7 @@ public class ChangelogController : Controller
             }
             else
             {
-                _logger.LogInformation("Version data loaded: " + System.Text.Json.JsonSerializer.Serialize(result));
+                _logger.LogInformation("Version data loaded: " + JsonConvert.SerializeObject(result));
             }
                 return Ok(result);
         }

@@ -56,7 +56,7 @@ public class TrashController : Controller
             {
                 trash.actual_temp_celsius = weather.Temp;
                 trash.feels_like_temp_celsius = weather.GTemp;
-                trash.wind_force_bft = weather.WindMs;
+                trash.wind_force_bft = weather.WindBft;
                 trash.wind_direction = weather.WindrGr;
             }
 

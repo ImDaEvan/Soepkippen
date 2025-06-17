@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SoepkipAPI.Data.Interfaces;
 using SoepkipAPI.Models;
 using SoepkipAPI.Services;

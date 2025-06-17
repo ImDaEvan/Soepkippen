@@ -1,11 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\SoepkipAPI",
-    "\\SoepkipAPI\\Controllers",
-    "\\SoepkipAPI\\Data",
-    "\\SoepkipAPI\\Models"
+    ""
   ],
-  "SelectedNode": "\\SoepkipAPI\\SoepkipAPI.sln",
+  "SelectedNode": "\\SoepkipAPI.sln",
   "PreviewInSolutionExplorer": false
 }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SoepkipAPI.Data.Interfaces;
 using SoepkipAPI.Models;
 using SoepkipAPI.Services;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 
 namespace SoepkipAPI.Controllers;
 
@@ -19,15 +19,15 @@ public class ChangelogController : Controller
         _logger = logger;
     }
 
-    private Dictionary<string, JsonElement> GetJsonFile()
+    private Dictionary<string, string> GetJsonFile()
     {
         var filePath = Path.Combine(Directory.GetCurrentDirectory(), "version.json");
 
         
-        var json = System.IO.File.ReadAllText(filePath);
+        var json =  System.IO.File.ReadAllText(filePath);
 
         // Deserialize as Dictionary<string, JsonElement> to support both objects and strings (like "current": "4")
-        var result = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+        var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
 
         return result;
     }
@@ -101,14 +101,14 @@ public class ChangelogController : Controller
                 return StatusCode(500, "Failed to parse version.json.");
             }
 
-            string currentVersion = result["current"].GetString();
+            string currentVersion = result["current"].ToString();
 
             if (!result.ContainsKey(currentVersion))
             {
                 return NotFound($"Version {currentVersion} not found.");
             }
 
-            string currentChangelog = result[currentVersion].GetString();
+            string currentChangelog = result[currentVersion].ToString();
 
             var response = new
             {
@@ -116,7 +116,7 @@ public class ChangelogController : Controller
                 changelog = currentChangelog
             };
 
-            _logger.LogInformation("Version data loaded: " + System.Text.Json.JsonSerializer.Serialize(response));
+            _logger.LogInformation("Version data loaded: " + JsonConvert.SerializeObject(response)); //System.Text.Json.JsonSerializer.Serialize(response));
             return Ok(response);
         }
         catch (Exception e)

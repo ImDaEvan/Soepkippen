@@ -67,4 +67,4 @@ jobs:
             sudo docker pull ${{ vars.DOCKER_USERNAME }}/soepkip-api:latest
             sudo docker stop soepkip-api || true
             sudo docker rm soepkip-api || true
-            eval "sudo docker run -d $(echo '${{vars.PUBLISH_PORTS}}' | sed 's/,/ -p /g' | sed 's/^/-p /') -e CONNECTION_STRING_MYSQL='${{ secrets.CONNECTION_STRING_MYSQL }}' -e JWT_KEY_MONITORING='${{ vars.JWT_KEY_MONITORING  }}' -e JWT_KEY_SENSORING='${{ vars.JWT_KEY_SENSORING }} -e JWT_ISSUER='${{ vars.JWT_ISSUER }} -e JWT_AUDIENCE ='${{ vars.JWT_AUDIENCE  }}  --name soepkip-api ${{ vars.DOCKER_USERNAME }}/soepkip-api:latest"
+            eval "sudo docker run -d $(echo '${{vars.PUBLISH_PORTS}}' | sed 's/,/ -p /g' | sed 's/^/-p /') -e CONNECTION_STRING_MYSQL='${{ secrets.CONNECTION_STRING_MYSQL }}' -e JWT_KEY_MONITORING='${{ vars.JWT_KEY_MONITORING }}' -e JWT_KEY_SENSORING='${{ vars.JWT_KEY_SENSORING }}' -e JWT_ISSUER='${{ vars.JWT_ISSUER }}' -e JWT_AUDIENCE='${{ vars.JWT_AUDIENCE }}'  --name soepkip-api ${{ vars.DOCKER_USERNAME }}/soepkip-api:latest"

@@ -13,19 +13,26 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     private readonly IConfiguration _config;
     private readonly SymmetricSecurityKey _privateKeyMonitoring;
     private readonly SymmetricSecurityKey _privateKeySensoring;
+    private string _monitoringKey;
+    private string _sensoringKey;
     private readonly string _issuer;
     private readonly string _audience;
     
-    public JwtTokenGenerator(IConfiguration config)
+    public JwtTokenGenerator(IConfiguration config, string monitoringKey, string sensoringKey)
     {
         _config = config;
-        var monitoringKey = Environment.GetEnvironmentVariable("JWT_KEY_MONITORING") ?? config["Jwt:MonitoringKey"] 
+        monitoringKey = Environment.GetEnvironmentVariable("JWT_KEY_MONITORING") ?? config["Jwt:MonitoringKey"] 
             ?? "defaultkeydefaultkeydefaultkeydefaultkey";
         _privateKeyMonitoring = new(Encoding.UTF8.GetBytes(monitoringKey));
+        _monitoringKey = monitoringKey;
         
-        var sensoringKey = Environment.GetEnvironmentVariable("JWT_KEY_SENSORING") ?? config["Jwt:SensoringKey"] 
+        sensoringKey = Environment.GetEnvironmentVariable("JWT_KEY_SENSORING") ?? config["Jwt:SensoringKey"] 
             ?? "defaultkeydefaultkeydefaultkeydefaultkey";
         _privateKeySensoring = new(Encoding.UTF8.GetBytes(sensoringKey));
+        _sensoringKey = sensoringKey;
+
+        Console.WriteLine(monitoringKey);
+        Console.WriteLine(sensoringKey);
         
         _issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? config["Jwt:Issuer"] ?? "default";
         _audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? config["Jwt:Audience"] ?? "default";
@@ -38,7 +45,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         SigningCredentials credentials;
         
         //Monitoring key
-        if (key == _config["Jwt:MonitoringKey"])
+        if (key == _monitoringKey)
         {
             credentials = new SigningCredentials(_privateKeyMonitoring, SecurityAlgorithms.HmacSha256)
             {
@@ -47,7 +54,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         }      
         
         //Sensoring key
-        else if (key == _config["Jwt:SensoringKey"])
+        else if (key == _sensoringKey)
         {
             credentials = new SigningCredentials(_privateKeySensoring, SecurityAlgorithms.HmacSha256)
             {

@@ -14,8 +14,6 @@ public class TrashController : Controller
     private readonly ILogger<TrashController> _logger;
     private readonly IWeatherService _weatherService;
 
-    public record MessageResponse(string Message);
-
     public TrashController(ITrashRepository trashRepository, ILogger<TrashController> logger, IWeatherService weatherService)
     {
         _trashRepository = trashRepository;
@@ -35,30 +33,30 @@ public class TrashController : Controller
 
     [HttpGet]
     [Authorize]
-    [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public IActionResult GetTrash([FromQuery] string dateLeft, [FromQuery] string dateRight)
     {
         try
         {
             if (!_trashRepository.TryParseIsoUtc(dateLeft, out var from)) // Fixed by removing the incorrect static call
             {
-                return BadRequest(new MessageResponse("Left date couldn't be parsed"));
+                return BadRequest("Left date couldn't be parsed");
             }
             if (!_trashRepository.TryParseIsoUtc(dateRight, out var to)) // Fixed by removing the incorrect static call
             {
-                return BadRequest(new MessageResponse("dateRight is in an invalid format!"));
+                return BadRequest("dateRight is in an invalid format!");
             }
             if (from > to)
             {
-                return BadRequest(new MessageResponse("dateLeft must be earlier than dateRight!"));
+                return BadRequest("dateLeft must be earlier than dateRight!");
             }
 
             var detections = _trashRepository.ReadRange(from, to);
 
             if (detections == null || !detections.Any())
             {
-                return NotFound(new MessageResponse("no trash found at date range"));
+                return NotFound("no trash found at date range");
             }
 
             return Ok(detections);
@@ -66,7 +64,7 @@ public class TrashController : Controller
         catch
         {
             _logger.LogError("An error occurred while retrieving trash detections.");
-            return BadRequest(new MessageResponse("An error occurred while processing your request."));
+            return BadRequest("An error occurred while processing your request.");
         }
     }
 

@@ -60,7 +60,6 @@ builder.Services.AddDbContext<TrashContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), optionsBuilder =>
     {
         optionsBuilder.CommandTimeout(10);
-        options.
     });
 });
 

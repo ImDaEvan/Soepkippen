@@ -2,5 +2,5 @@
 
 public interface IWeatherService
 {
-    Task<WeatherData?> GetWeatherAsync(string location);
+    Task<WeatherData?> GetWeatherAsync(float longditude, float latitude);
 }

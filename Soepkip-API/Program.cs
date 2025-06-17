@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SoepkipAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,9 +95,23 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
-
 //Landing page
 app.MapGet("/", () => Results.Content("Api up and running", "text/html"));
+
+//Version page
+app.MapGet("/api/version", () => {
+    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "version.json");
+        
+    var json =  System.IO.File.ReadAllText(filePath);
+
+    // Deserialize as Dictionary<string, JsonElement> to support both objects and strings (like "current": "4")
+    var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+    if (result == null) return "Version not found";
+    
+    return result["current"];
+});
+
+app.MapControllers();
 
 app.Run();

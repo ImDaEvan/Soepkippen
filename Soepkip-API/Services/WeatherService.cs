@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
+using SoepkipAPI.Data.Interfaces;
 using SoepkipAPI.Models;
 
 namespace SoepkipAPI.Services;
 
-public class WeatherService
+public class WeatherService : IWeatherService
 {
     private readonly HttpClient _httpClient;
     private readonly string _apiKey = "1cef529b51";
@@ -13,7 +14,7 @@ public class WeatherService
         _httpClient = httpClient;
     }
 
-    public async Task<LiveWeather> GetWeatherAsync(string location)
+    public async Task<WeatherData?> GetWeatherAsync(string location)
     {
         var url = $"https://weerlive.nl/api/json-data-10min.php?locatie={location}&key={_apiKey}";
         var response = await _httpClient.GetAsync(url);
@@ -21,9 +22,12 @@ public class WeatherService
         if (!response.IsSuccessStatusCode) return null;
 
         var json = await response.Content.ReadAsStringAsync();
-        var parsed = JsonConvert.DeserializeObject<WeatherLiveResponse>(json);
+        var parsed = JsonConvert.DeserializeObject<WeatherResponse>(json);
 
-        return parsed?.liveweer.FirstOrDefault();
+        var windms = parsed.liveweer.FirstOrDefault().WindMs;
+        parsed.liveweer.FirstOrDefault()!.WindBft = (float)Math.Ceiling(Math.Cbrt(Math.Pow(windms / 0.836f, 2))); //convert ms to bft
+
+        return parsed.liveweer.FirstOrDefault();
     }
 }
 

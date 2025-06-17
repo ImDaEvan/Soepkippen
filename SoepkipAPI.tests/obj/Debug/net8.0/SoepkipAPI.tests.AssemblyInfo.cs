@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SoepkipAPI.tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6ac6feee8d4b36b98577909a96929b1c8943d6e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+79528f60fcca56e67808c3b8fccc22f82a26d433")]
 [assembly: System.Reflection.AssemblyProductAttribute("SoepkipAPI.tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SoepkipAPI.tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

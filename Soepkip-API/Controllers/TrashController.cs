@@ -70,15 +70,20 @@ public class TrashController : Controller
     {
         try
         {
-            // Enrich trash data with weather info
-            var weather = await _weatherService.GetWeatherAsync("Breda");
-
-            if (weather != null)
+            //Only enrich data if there's a location
+            if (trash.longditude != null && trash.latitude != null)
             {
-                trash.actual_temp_celsius = weather.Temp;
-                trash.feels_like_temp_celsius = weather.GTemp;
-                trash.wind_force_bft = weather.WindBft;
-                trash.wind_direction = weather.WindrGr;
+                // Enrich trash data with weather info
+                var weather = await _weatherService.GetWeatherAsync((float)trash.longditude, (float)trash.latitude);
+
+                if (weather != null)
+                {
+                    trash.actual_temp_celsius = weather.Temp;
+                    trash.feels_like_temp_celsius = weather.GTemp;
+                    trash.wind_force_bft = weather.WindBft;
+                    trash.wind_direction = weather.WindrGr;
+                    trash.weather_timestamp = weather.ParsedTime;
+                }
             }
 
             //test change

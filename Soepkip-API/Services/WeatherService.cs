@@ -14,9 +14,9 @@ public class WeatherService : IWeatherService
         _httpClient = httpClient;
     }
 
-    public async Task<WeatherData?> GetWeatherAsync(string location)
+    public async Task<WeatherData?> GetWeatherAsync(float longditude, float latitude)
     {
-        var url = $"https://weerlive.nl/api/json-data-10min.php?locatie={location}&key={_apiKey}";
+        var url = $"https://weerlive.nl/api/json-data-10min.php?locatie={longditude},{latitude}&key={_apiKey}";
         var response = await _httpClient.GetAsync(url);
 
         if (!response.IsSuccessStatusCode) return null;

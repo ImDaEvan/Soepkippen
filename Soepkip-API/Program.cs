@@ -20,7 +20,7 @@ builder.Services.AddHttpClient<WeatherService>();
 
 // JWT Configuratie
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer("Sensoring", options =>
+    .AddJwtBearer("sensoring", options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -30,9 +30,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SensoringKey"]!))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( Environment.GetEnvironmentVariable("JWT_KEY_MONITORING") ?? builder.Configuration["Jwt:SensoringKey"] ?? ""))
         };
-    }).AddJwtBearer("Monitoring", options =>
+    }).AddJwtBearer("monitoring", options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -42,7 +42,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:MonitoringKey"]!))
+            IssuerSigningKey = new SymmetricSecurityKey((Encoding.UTF8.GetBytes( Environment.GetEnvironmentVariable("JWT_KEY_SENSORING") ?? builder.Configuration["Jwt:MonitoringKey"] ?? "")))
         };
     });
 

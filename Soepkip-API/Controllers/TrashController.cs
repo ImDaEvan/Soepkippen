@@ -22,7 +22,7 @@ public class TrashController : Controller
     }
 
     // GET: api/trash?dateLeft=a&dateRight=b
-    [Authorize(Policy = "Monitoring")]
+    [Authorize(AuthenticationSchemes = "monitoring")]
     [HttpGet]
     public IActionResult ReadRange(string dateLeft, string dateRight)
     {
@@ -45,7 +45,7 @@ public class TrashController : Controller
     }
 
     // POST: api/trash
-    [Authorize(Policy = "Sensoring")]
+    [Authorize(AuthenticationSchemes = "sensoring")]
     [HttpPost]
     public async Task<IActionResult> Write([FromBody] TrashItem trash)
     {

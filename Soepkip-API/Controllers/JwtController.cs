@@ -19,25 +19,25 @@ public class JwtController : Controller
     }
 
     [HttpGet]
-    public IActionResult GetJwt([FromQuery] string key)
+    public IActionResult GetJwt([FromQuery] string? key)
     {
         try
         {
             //Check if string contains anything
-            if (key.IsNullOrEmpty()) throw new("No JWT was generated due to the supplied key being empty");
+            if (key.IsNullOrEmpty()) return BadRequest("No JWT was generated due to the supplied key being empty");
             
             //Generate the jwt key
-            var jwtKey = _jwtGenerator.GenerateClientToken(key);
+            var jwtKey = _jwtGenerator.GenerateClientToken(key!);
             
             //Check if a key was generated
-            if (jwtKey.IsNullOrEmpty()) throw new("No JWT was generated due to an internal server error");
+            if (jwtKey.IsNullOrEmpty()) return BadRequest("No JWT was generated due to an internal server error");
 
             return Ok(jwtKey);
         }
         catch (Exception e)
         {
             _logger.LogError($"{e.Message}\n{e.InnerException}");
-            return BadRequest($"Something went wrong while generating jwt: {e.Message}");
+            return BadRequest("Something went wrong while generating jwt");
         }
     }
 }

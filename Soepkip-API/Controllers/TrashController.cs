@@ -51,6 +51,14 @@ public class TrashController : Controller
             // Enrich trash data with weather info
             var weather = await _weatherService.GetWeatherAsync("Breda");
 
+            if (weather != null)
+            {
+                trash.actual_temp_celsius = weather.temp;
+                trash.feels_like_temp_celsius = weather.gtemp;
+                trash.wind_force_kmh = weather.windkmh;
+                trash.wind_direction = weather.windr;
+            }
+
             //test change
             _trashRepository.Write(trash);
 

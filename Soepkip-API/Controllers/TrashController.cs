@@ -48,10 +48,9 @@ public class TrashController : Controller
     {
         try
         {
-            _trashRepository.Write(trash);
-
             // Enrich trash data with weather info
             var weather = await _weatherService.GetWeatherAsync("Breda");
+
             if (weather != null)
             {
                 trash.actual_temp_celsius = weather.Temp;
@@ -59,6 +58,10 @@ public class TrashController : Controller
                 trash.wind_force_bft = weather.WindBft;
                 trash.wind_direction = weather.WindrGr;
             }
+
+            //test change
+            _trashRepository.Write(trash);
+
 
             var rowsAffected = await _trashRepository.SaveChangesAsync();
             if (rowsAffected == 0)

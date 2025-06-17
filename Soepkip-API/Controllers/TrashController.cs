@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SoepkipAPI.Data.Interfaces;
 using SoepkipAPI.Models;
 using SoepkipAPI.Services;
@@ -21,6 +22,7 @@ public class TrashController : Controller
     }
 
     // GET: api/trash?dateLeft=a&dateRight=b
+    [Authorize(Policy = "Monitoring")]
     [HttpGet]
     public IActionResult ReadRange(string dateLeft, string dateRight)
     {
@@ -43,6 +45,7 @@ public class TrashController : Controller
     }
 
     // POST: api/trash
+    [Authorize(Policy = "Sensoring")]
     [HttpPost]
     public async Task<IActionResult> Write([FromBody] TrashItem trash)
     {

@@ -9,6 +9,7 @@ namespace SoepkipAPI.Services;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
+    private readonly IConfiguration _config;
     private readonly SymmetricSecurityKey _privateKeyMonitoring;
     private readonly SymmetricSecurityKey _privateKeySensoring;
     private readonly string _issuer;
@@ -16,6 +17,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     
     public JwtTokenGenerator(IConfiguration config)
     {
+        _config = config;
         var monitoringKey = Environment.GetEnvironmentVariable("JWT_KEY_MONITORING") ?? config["Jwt:MonitoringKey"] ?? "";
         var sensoringKey = Environment.GetEnvironmentVariable("JWT_KEY_SENSORING") ?? config["Jwt:SensoingKey"] ?? "";
         
@@ -28,11 +30,30 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
     public string GenerateClientToken(string key)
     {
-        //TODO: make seperate generators for both monitoring and sensoring
-        var credentials = new SigningCredentials(new RsaSecurityKey(_rsaPrivateKey), SecurityAlgorithms.RsaSha256)
+        //Default key does not work
+        var credentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Nope lol")), SecurityAlgorithms.RsaSha256)
         {
             CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
         };
+        
+        //Monitoring key
+        if (key == _config["Jwt:MonitoringKey"])
+        {
+            credentials = new SigningCredentials(_privateKeyMonitoring, SecurityAlgorithms.RsaSha256)
+            {
+                CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+            };
+        }      
+        
+        //Sensoring key
+        else if (key == _config["Jwt:MonitoringKey"])
+        {
+            credentials = new SigningCredentials(_privateKeyMonitoring, SecurityAlgorithms.RsaSha256)
+            {
+                CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+            };
+        }
+        
 
         var claims = new[]
         {

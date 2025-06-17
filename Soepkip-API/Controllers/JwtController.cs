@@ -31,6 +31,8 @@ public class JwtController : Controller
             
             //Check if a key was generated
             if (jwtKey.IsNullOrEmpty()) throw new("No JWT was generated due to an internal server error");
+
+            return Ok(jwtKey);
         }
         catch (Exception e)
         {

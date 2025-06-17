@@ -57,7 +57,11 @@ var connectionString =
     Environment.GetEnvironmentVariable("CONNECTION_STRING_MYSQL") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<TrashContext>(options =>
 {
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), optionsBuilder =>
+    {
+        optionsBuilder.CommandTimeout(10);
+        options.
+    });
 });
 
 var app = builder.Build();

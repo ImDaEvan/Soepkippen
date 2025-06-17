@@ -16,7 +16,7 @@ public class TrashController : Controller
 
     public record MessageResponse(string Message);
 
-    public TrashController(ITrashRepository trashRepository, ILogger<TrashController> logger, WeatherService weatherService)
+    public TrashController(ITrashRepository trashRepository, ILogger<TrashController> logger, IWeatherService weatherService)
     {
         _trashRepository = trashRepository;
         _logger = logger;

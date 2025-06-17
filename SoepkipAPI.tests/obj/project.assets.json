@@ -5171,24 +5171,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\bob-a\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\thoma\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\bob-a\\Documents\\Projects\\AISystemIntegration\\SoepkipAPI.tests\\SoepkipAPI.tests.csproj",
+      "projectUniqueName": "C:\\Users\\thoma\\Documents\\.School\\Season 2\\ai-system-intergration\\soepkippen-bob\\SoepkipAPI.tests\\SoepkipAPI.tests.csproj",
       "projectName": "SoepkipAPI.tests",
-      "projectPath": "C:\\Users\\bob-a\\Documents\\Projects\\AISystemIntegration\\SoepkipAPI.tests\\SoepkipAPI.tests.csproj",
-      "packagesPath": "C:\\Users\\bob-a\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\bob-a\\Documents\\Projects\\AISystemIntegration\\SoepkipAPI.tests\\obj\\",
+      "projectPath": "C:\\Users\\thoma\\Documents\\.School\\Season 2\\ai-system-intergration\\soepkippen-bob\\SoepkipAPI.tests\\SoepkipAPI.tests.csproj",
+      "packagesPath": "C:\\Users\\thoma\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\thoma\\Documents\\.School\\Season 2\\ai-system-intergration\\soepkippen-bob\\SoepkipAPI.tests\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\bob-a\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\thoma\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5202,8 +5197,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\bob-a\\Documents\\Projects\\AISystemIntegration\\Soepkip-API\\SoepkipAPI.csproj": {
-              "projectPath": "C:\\Users\\bob-a\\Documents\\Projects\\AISystemIntegration\\Soepkip-API\\SoepkipAPI.csproj"
+            "C:\\Users\\thoma\\Documents\\.School\\Season 2\\ai-system-intergration\\soepkippen-bob\\Soepkip-API\\SoepkipAPI.csproj": {
+              "projectPath": "C:\\Users\\thoma\\Documents\\.School\\Season 2\\ai-system-intergration\\soepkippen-bob\\Soepkip-API\\SoepkipAPI.csproj"
             }
           }
         }
@@ -5216,9 +5211,9 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "direct"
+        "auditMode": "all"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -5256,12 +5251,30 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.11, 8.0.11]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.11, 8.0.11]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.11, 8.0.11]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.11, 8.0.11]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Users\\thoma\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

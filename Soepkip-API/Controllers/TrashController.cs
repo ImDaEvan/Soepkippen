@@ -21,6 +21,7 @@ public class TrashController : Controller
         _weatherService = weatherService;
     }
 
+    // GET: api/trash?dateLeft=a&dateRight=b
     /// <summary>
     /// Retrieves all trash detections between <paramref name="dateLeft"/> and <paramref name="dateRight"/>.
     /// </summary>
@@ -32,7 +33,7 @@ public class TrashController : Controller
     /// <response code = "404">No trash detections found in the specified range.</response>
 
     [HttpGet]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "monitoring")]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public IActionResult GetTrash([FromQuery] string dateLeft, [FromQuery] string dateRight)
     {
@@ -63,6 +64,7 @@ public class TrashController : Controller
     }
 
     // POST: api/trash
+    [Authorize(AuthenticationSchemes = "sensoring")]
     [HttpPost]
     public async Task<IActionResult> Write([FromBody] TrashItem trash)
     {

@@ -13,20 +13,20 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     private readonly IConfiguration _config;
     private readonly SymmetricSecurityKey _privateKeyMonitoring;
     private readonly SymmetricSecurityKey _privateKeySensoring;
-    private string _monitoringKey;
-    private string _sensoringKey;
+    private readonly string _monitoringKey;
+    private readonly string _sensoringKey;
     private readonly string _issuer;
     private readonly string _audience;
     
-    public JwtTokenGenerator(IConfiguration config, string monitoringKey, string sensoringKey)
+    public JwtTokenGenerator(IConfiguration config)
     {
         _config = config;
-        monitoringKey = Environment.GetEnvironmentVariable("JWT_KEY_MONITORING") ?? config["Jwt:MonitoringKey"] 
+        var monitoringKey = Environment.GetEnvironmentVariable("JWT_KEY_MONITORING") ?? config["Jwt:MonitoringKey"] 
             ?? "defaultkeydefaultkeydefaultkeydefaultkey";
         _privateKeyMonitoring = new(Encoding.UTF8.GetBytes(monitoringKey));
         _monitoringKey = monitoringKey;
         
-        sensoringKey = Environment.GetEnvironmentVariable("JWT_KEY_SENSORING") ?? config["Jwt:SensoringKey"] 
+        var sensoringKey = Environment.GetEnvironmentVariable("JWT_KEY_SENSORING") ?? config["Jwt:SensoringKey"] 
             ?? "defaultkeydefaultkeydefaultkeydefaultkey";
         _privateKeySensoring = new(Encoding.UTF8.GetBytes(sensoringKey));
         _sensoringKey = sensoringKey;

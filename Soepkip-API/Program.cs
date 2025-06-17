@@ -54,8 +54,7 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 //Add database connection
 var connectionString =
-    builder.Configuration.GetConnectionString(Environment.GetEnvironmentVariable("CONNECTION_STRING_MYSQL") ??
-                                              "DefaultConnection");
+    Environment.GetEnvironmentVariable("CONNECTION_STRING_MYSQL") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<TrashContext>(options =>
 {
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));

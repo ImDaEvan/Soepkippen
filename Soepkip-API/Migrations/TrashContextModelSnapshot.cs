@@ -57,7 +57,7 @@ namespace SoepkipAPI.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Trash");
+                    b.ToTable("Trash", (string)null);
                 });
 #pragma warning restore 612, 618
         }

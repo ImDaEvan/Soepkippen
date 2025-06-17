@@ -12,7 +12,7 @@ public class TrashController : Controller
 {
     private readonly ITrashRepository _trashRepository;
     private readonly ILogger<TrashController> _logger;
-    private readonly WeatherService _weatherService;
+    private readonly IWeatherService _weatherService;
 
     public record MessageResponse(string Message);
 
@@ -82,10 +82,10 @@ public class TrashController : Controller
             var weather = await _weatherService.GetWeatherAsync("Breda");
             if (weather != null)
             {
-                trash.actual_temp_celsius = weather.temp;
-                trash.feels_like_temp_celsius = weather.gtemp;
-                trash.wind_force_kmh = weather.windkmh;
-                trash.wind_direction = weather.windr;
+                trash.actual_temp_celsius = weather.Temp;
+                trash.feels_like_temp_celsius = weather.GTemp;
+                trash.wind_force_bft = weather.WindBft;
+                trash.wind_direction = weather.WindrGr;
             }
 
             var rowsAffected = await _trashRepository.SaveChangesAsync();
@@ -97,7 +97,7 @@ public class TrashController : Controller
         catch (Exception e)
         {
             _logger.LogError($"{e.Message}\n{e.InnerException}");
-            return BadRequest();
+            return BadRequest($"Something went wrong: {e.Message}");
         }
     }
 }

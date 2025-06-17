@@ -53,11 +53,6 @@ public class TrashController : Controller
 
             var detections = _trashRepository.ReadRange(from, to);
 
-            if (detections == null || !detections.Any())
-            {
-                return NotFound("no trash found at date range");
-            }
-
             return Ok(detections);
         }
         catch

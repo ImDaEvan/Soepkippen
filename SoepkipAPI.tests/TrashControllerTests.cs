@@ -89,7 +89,12 @@ namespace SoepkipAPI.tests
             // Act
             var result = _sut.GetTrash(from.ToString(ISO), to.ToString(ISO));
             // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+            var ok = result as OkObjectResult;
+            Assert.IsNotNull(ok, "Controller should return 200 OK.");
+
+            var payload = ok.Value as IEnumerable<TrashItem>;
+            Assert.IsNotNull(payload, "Payload should be a list.");
+            Assert.AreEqual(0, payload.Count(), "List should be empty.");
         }
     }
 }

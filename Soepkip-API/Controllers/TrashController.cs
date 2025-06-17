@@ -34,7 +34,6 @@ public class TrashController : Controller
     [HttpGet]
     [Authorize]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public IActionResult GetTrash([FromQuery] string dateLeft, [FromQuery] string dateRight)
     {
         try

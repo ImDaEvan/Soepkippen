@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SoepkipAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 //Depencency injection
 builder.Services.AddTransient<ITrashRepository, TrashRepository>();
+builder.Services.AddTransient<IWeatherService, WeatherService>();
 builder.Services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
@@ -73,5 +75,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//Landing page
+app.MapGet("/", () => Results.Content("Api up and running", "text/html"));
 
 app.Run();

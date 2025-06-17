@@ -1,8 +1,6 @@
 {
   "1.0.0": "Initial release",
-  "1.0.1": "none",
-  "1.0.2": "none",
-  "1.0.3": "Added /api/changelog endpoint , but /api/changelog/latest still returned all the endpoints.",
-  "1.0.4": "Changed /api/changelog to accept a query param like: ?version=1.0.4    ,    /api/changelog/latest now returns the latest version and changelog.    ,    -/api/changelog/all now returns all versions and changelogs.",
-  "current": "1.0.4"
+  "2.0.0": "# Update 2.0.0 - Second release\n- Trash can be pushed to the endpoint ``POST: /api/trash`` to upload detected trash data [Sensoring only]\n- Trash data can be requested between two given timestamps from the endpoint ``GET: /api/trash?dateLeft=a&dateRight=b``",
+  "3.0.0": "# Update 3.0.0 - Third release\n- Trash POST and GET are now secured with jwt bearer token authentication\n- New endpoint created: ``GET /``\n   - Use this endpoint to  check wether the api is running\n- New endpoint created: ``GET: /api/jwt?key=text`` \n  - Use this with your supplied token to generate a jwt bearer token\n- New endpoint created: ``GET: /api/changelog``\n    - Use ``/all`` to get every changelog\n    - Use ``/latest`` for the latest version changelog\n    - Use ``?version=`` to get a specific version changelog",
+  "current": "3.0.0"
 }

@@ -1,31 +1,52 @@
+import os
+import cv2
+import methods
 
-import json
-import random
-import math
-def CreateTrashObject(timestamp,trashtype,confidence,longitude,latitude,feel_temp,actual_temp,wind_force,wind_direction):
-    trashItem = {
-        "timestamp" :               timestamp or  , # date object parsed to string
-        "type":                     trashtype, # STRING
-        "confidence":               confidence, # FLOAT
-        "longitude":                longitude, # FLOAT
-        "latitude":                 latitude, # FLOAT
-        "feels_like_temp_celsius":  feel_temp, # FLOAT?
-        "actual_temp_celsius":      actual_temp, # FLOAT?
-        "wind_force_bft":           wind_force, # FLOAT?
-        "wind_direction_degrees":   wind_direction # FLOAT?
-    }
-    return trashItem
+while True:
+    # Capture photo
+    image = None
+    frame_size = None
+    while True:
+        frame = methods.capture_camera()
+        frame_size = (frame.shape[1], frame.shape[0])  # (width, height)
+        frame = cv2.resize(frame, frame_size)
+        cv2.imshow('Live Feed', frame)
 
-#fruitsEncoded = json.dumps(fruits)
+        key = cv2.waitKey(1)
+        if(key == 32): # Space key  
+            image = methods.capture_camera()
+            break
 
-def SendToApi(trashItems):
-    for l in trashItems:
-        for i in l:
-            print(i,l[i])
+        if(key == 27): # Space key
+            print("exiting...")
+            exit()
 
-SendToApi(items)
 
-Images = ["1","2"]
-for i in Images:
-    trashItems = []
-    trashItems[trashItems.count()+1] = CreateTrashObject()
+    # Classify the image
+    ai_result = methods.classify_image(image)
+    print(ai_result["predictions"])
+
+    # Show image boundary
+    fig = methods.show_classification_boundary(image, ai_result, frame_size)
+    methods.show_img_from_fig(fig, frame_size) 
+
+
+    # Wait untill user presses key again to restart the process
+    while True:
+        key = cv2.waitKey(1)
+
+        if(key == 32): # Space key
+            break
+
+        if(key == 27): # Space key
+            print("exiting...")
+            exit()
+    cv2.destroyAllWindows()
+    continue # Repeat from the top of the program
+
+    methods.SendToApi([])
+    # Check if results contain any classes
+    Images = ["1","2"]
+    for i in Images:
+        trashItems = []
+        trashItems[trashItems.count()+1] = methods.CreateTrashObject()

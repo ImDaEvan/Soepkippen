@@ -35,7 +35,6 @@ public class TrashController : Controller
     [HttpGet]
     [Authorize(AuthenticationSchemes = "monitoring")]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public IActionResult GetTrash([FromQuery] string dateLeft, [FromQuery] string dateRight)
     {
         try
@@ -54,11 +53,6 @@ public class TrashController : Controller
             }
 
             var detections = _trashRepository.ReadRange(from, to);
-
-            if (detections == null || !detections.Any())
-            {
-                return NotFound("no trash found at date range");
-            }
 
             return Ok(detections);
         }

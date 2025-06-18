@@ -12,6 +12,7 @@ namespace SoepkipAPI.tests
     [TestClass]
     public sealed class TrashControllerTests
     {
+        public TestContext? TestContext { get; set; }
         private const string ISO = "yyyy-MM-dd'T'HH:mm:ss.fff'Z'";
         private Mock<ITrashRepository> _repo = null!;
         private Mock<ILogger<TrashController>> _log = null!;
@@ -78,7 +79,7 @@ namespace SoepkipAPI.tests
         }
 
         [TestMethod]
-        public void NoTrashFound_ReturnsNotFound()
+        public void NoTrashFound_ReturnsOk_WithEmptyList()
         {
             // Arrange
             var from = new DateTime(2025, 6, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -89,7 +90,12 @@ namespace SoepkipAPI.tests
             // Act
             var result = _sut.GetTrash(from.ToString(ISO), to.ToString(ISO));
             // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+            var ok = result as OkObjectResult;
+            Assert.IsNotNull(ok, "Controller should return 200 OK.");
+
+            var payload = ok.Value as IEnumerable<TrashItem>;
+            Assert.IsNotNull(payload, "Payload should be a list.");
+            Assert.AreEqual(0, payload.Count(), "List should be empty.");
         }
     }
 }

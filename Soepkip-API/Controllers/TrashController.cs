@@ -35,7 +35,6 @@ public class TrashController : Controller
     [HttpGet]
     [Authorize(AuthenticationSchemes = "monitoring")]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public IActionResult GetTrash([FromQuery] string dateLeft, [FromQuery] string dateRight)
     {
         try
@@ -55,11 +54,6 @@ public class TrashController : Controller
 
             var detections = _trashRepository.ReadRange(from, to);
 
-            if (detections == null || !detections.Any())
-            {
-                return NotFound("no trash found at date range");
-            }
-
             return Ok(detections);
         }
         catch
@@ -76,15 +70,20 @@ public class TrashController : Controller
     {
         try
         {
-            // Enrich trash data with weather info
-            var weather = await _weatherService.GetWeatherAsync("Breda");
-
-            if (weather != null)
+            //Only enrich data if there's a location
+            if (trash.longditude != null && trash.latitude != null)
             {
-                trash.actual_temp_celsius = weather.Temp;
-                trash.feels_like_temp_celsius = weather.GTemp;
-                trash.wind_force_bft = weather.WindBft;
-                trash.wind_direction = weather.WindrGr;
+                // Enrich trash data with weather info
+                var weather = await _weatherService.GetWeatherAsync((float)trash.longditude, (float)trash.latitude);
+
+                if (weather != null)
+                {
+                    trash.actual_temp_celsius = weather.Temp;
+                    trash.feels_like_temp_celsius = weather.GTemp;
+                    trash.wind_force_bft = weather.WindBft;
+                    trash.wind_direction = weather.WindrGr;
+                    trash.weather_timestamp = weather.ParsedTime;
+                }
             }
 
             //test change

@@ -2,5 +2,6 @@
   "1.0.0": "Initial release",
   "2.0.0": "# Update 2.0.0 - Second release\n- Trash can be pushed to the endpoint ``POST: /api/trash`` to upload detected trash data [Sensoring only]\n- Trash data can be requested between two given timestamps from the endpoint ``GET: /api/trash?dateLeft=a&dateRight=b``",
   "3.0.0": "# Update 3.0.0 - Third release\n- Trash POST and GET are now secured with jwt bearer token authentication\n- New endpoint created: ``GET /``\n   - Use this endpoint to  check wether the api is running\n- New endpoint created: ``GET: /api/jwt?key=text`` \n  - Use this with your supplied token to generate a jwt bearer token\n- New endpoint created: ``GET: /api/changelog``\n    - Use ``/all`` to get every changelog\n    - Use ``/latest`` for the latest version changelog\n    - Use ``?version=`` to get a specific version changelog",
-  "current": "3.0.0"
+  "3.0.1": "# Update 3.0.1 - Post-deployment fixes and changes\n- Increased database query timeout to 10 seconds in hope that less requests will time out\n- Trash model has a new property: ``weather_timestamp``. This will display the time at which the weather was recorded.\n- The trash item will only have enriched weather data if there is a location (long and lat) present inside the model.\n- ``/api/changelog/all`` has been renamed to ``/api/changelog/`` for simplicity\n- ``/api/changelog?version={version}`` has been renamed to ``/api/changelog/{version}`` for consistency\n- The latest version can be retrieved at ``/api/version``",
+  "current": "3.0.1"
 }

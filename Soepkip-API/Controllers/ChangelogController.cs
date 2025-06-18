@@ -22,7 +22,6 @@ public class ChangelogController : Controller
     private Dictionary<string, string> GetJsonFile()
     {
         var filePath = Path.Combine(Directory.GetCurrentDirectory(), "version.json");
-
         
         var json =  System.IO.File.ReadAllText(filePath);
 
@@ -32,7 +31,7 @@ public class ChangelogController : Controller
         return result;
     }
 
-    [HttpGet("all")]
+    [HttpGet]
     public IActionResult GetVersionData()
     {
         try
@@ -47,7 +46,7 @@ public class ChangelogController : Controller
             {
                 _logger.LogInformation("Version data loaded: " + JsonConvert.SerializeObject(result));
             }
-                return Ok(result);
+            return Ok(result);
         }
         catch (Exception e)
         {
@@ -55,8 +54,8 @@ public class ChangelogController : Controller
             return BadRequest();
         }
     }
-    [HttpGet]
-    public IActionResult GetChangelogByQuery([FromQuery] string version)
+    [HttpGet("{version}")]
+    public IActionResult GetChangelogByQuery(string version)
     {
         try
         {

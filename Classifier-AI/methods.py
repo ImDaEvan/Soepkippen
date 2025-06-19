@@ -3,11 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import requests
 from inference_sdk import InferenceHTTPClient
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ExifTags
 
 global cap
-
-
 
 # Takes photo
 cap = cv2.VideoCapture(0)
@@ -29,12 +27,14 @@ def show_img_from_fig(fig, frame_size):
     img = fig_to_img(fig, frame_size)
     cv2.imshow('Live Feed', img)
 
+
 # cv2 to imageTK
 def cv2img_to_imgTK(cv2Img):
     b,g,r = cv2.split(cv2Img)
     img = cv2.merge((r,g,b))
     img = Image.fromarray(img)
     return ImageTk.PhotoImage(image=img)
+
 
 # Figure to image
 def fig_to_img(fig, frame_size):
@@ -43,6 +43,49 @@ def fig_to_img(fig, frame_size):
     img = cv2.resize(cv2.cvtColor(img_plot, cv2.COLOR_RGBA2BGR), frame_size)
     
     return img
+
+# Gets position data from image
+def get_lonlat_from_photo(img):
+    try:
+        exif_data = img._getexif()
+
+        if not exif_data:
+            return None
+
+        # Map exif tag numbers to tag names
+        exif = {
+            ExifTags.TAGS.get(tag): value
+            for tag, value in exif_data.items()
+            if tag in ExifTags.TAGS
+        }
+
+        gps_info = exif.get("GPSInfo")
+        if not gps_info:
+            return None
+
+        # map GPSInfo keys from integers to names
+        gps_tags = {}
+        for key in gps_info.keys():
+            decoded = ExifTags.GPSTAGS.get(key)
+            gps_tags[decoded] = gps_info[key]
+
+        def convert_to_degrees(value):
+            d, m, s = value
+            return float(d) + float(m)/60 + float(s)/3600
+
+        lat = convert_to_degrees(gps_tags["GPSLatitude"])
+        lat_ref = gps_tags["GPSLatitudeRef"]
+        lon = convert_to_degrees(gps_tags["GPSLongitude"])
+        lon_ref = gps_tags["GPSLongitudeRef"]
+
+        if lat_ref != 'N':
+            lat = -lat
+        if lon_ref != 'E':
+            lon = -lon
+
+        return lat, lon
+    except:
+        return None
 
 
 # Ai looks for objects
@@ -57,8 +100,6 @@ def classify_image(image):
     print("Checking image....")
     result = CLIENT.infer(image, model_id="object-detection-cxgfe/3")
     return result
-
-
 
 
 # Draws a boundary box around the image

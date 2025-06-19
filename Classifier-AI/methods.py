@@ -1,4 +1,5 @@
 import cv2
+import geopy.location
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
@@ -87,7 +88,6 @@ def get_lonlat_from_photo(img):
     except:
         return None
 
-
 # Ai looks for objects
 def classify_image(image):
     # Loading the model
@@ -98,18 +98,14 @@ def classify_image(image):
 
     # Using the model
     print("Checking image....")
-    result = CLIENT.infer(image, model_id="object-detection-cxgfe/3")
+    result = CLIENT.infer(image, model_id="trash-detection-qksx6/2")
     return result
 
 
 # Draws a boundary box around the image
-def show_classification_boundary(image, model_result, display_size=None):
+def show_classification_boundary(image, model_result, display_size):
     if image is None:
         raise FileNotFoundError("Image not found.")
-    
-    # Determine output size
-    if display_size is None:
-        display_size = (image.shape[1], image.shape[0])  # (width, height)
 
     # Resize image to display size
     image_resized = cv2.resize(image, display_size)

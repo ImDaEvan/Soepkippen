@@ -4,6 +4,7 @@ import methods
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image
+import math
 
 # Global variables
 imgtk = None
@@ -14,8 +15,23 @@ datetime = None
 # Displays the iamge on tkinter window
 def predict_and_display_image(img):
     global imgtk, panel, window
-    frame_size = (img.shape[1], img.shape[0])  # (width, height)
 
+    # Get aspect ratio of photo
+    width = img.shape[1]
+    height = img.shape[0]
+    aspect_ratio = width / height
+
+    if width / 1000 > height / 1000:
+        new_width = min(width, 1000)
+        new_height = new_width / aspect_ratio
+    else:
+        new_height = min(height, 1000)
+        new_width = new_height * aspect_ratio
+
+    # Final frame size as integers
+    frame_size = (int(new_width), int(new_height))
+
+    img = cv2.resize(img, frame_size)
     #Convert cv2 image to tkinter image
     imgtk = methods.cv2img_to_imgTK(img)
 
@@ -42,7 +58,7 @@ def predict_and_display_image(img):
 # Opens and display image file
 def open_image():
     global location
-    image_path = filedialog.askopenfilename(title="Select Image File", filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp *.ico")])
+    image_path = filedialog.askopenfilename(title="Select Image File", filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp *.ico *.webp")])
 
     if(image_path != ""):
         # Convert image to cv2 image

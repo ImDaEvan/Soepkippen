@@ -1,9 +1,54 @@
 import os
 import cv2
 import methods
+import tkinter as tk
+from tkinter import dnd
+from tkinter import filedialog, dialog
+from PIL import Image
 
-while True:
-    # Capture photo
+
+# Displays the iamge on tkinter window
+imgtk = None
+def predict_and_display_image(img):
+    global imgtk, panel, window
+    frame_size = (img.shape[1], img.shape[0])  # (width, height)
+
+    #Convert cv2 image to tkinter image
+    imgtk = methods.cv2img_to_imgTK(img)
+
+    # Show tkinter image (preview before showing the annotations)
+    panel.config(image=imgtk)
+    window.geometry(f"{str(imgtk.width())}x{str(imgtk.height() + 50)}")
+    panel.update()
+    window.update()
+    
+    # Classify the image
+    ai_result = methods.classify_image(img)
+
+    # Show image boundary
+    fig = methods.show_classification_boundary(img, ai_result, frame_size)
+    print(ai_result["predictions"])
+    img = methods.fig_to_img(fig, frame_size)
+    imgtk = methods.cv2img_to_imgTK(img)
+
+    # Show tkinter image (annotated view)
+    panel.config(image=imgtk)
+    panel.update()
+
+
+#TODO: extract exif data from photo
+# Opens and display image file
+def open_image():
+    image_path = filedialog.askopenfilename(title="Select Image File", filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp *.ico")])
+
+    if(image_path != ""):
+        # Convert image to cv2 image
+        pic = cv2.imread(image_path)
+
+        predict_and_display_image(pic)
+
+# Opens and displays shot photo
+def open_camera():
     image = None
     frame_size = None
     while True:
@@ -15,38 +60,47 @@ while True:
         key = cv2.waitKey(1)
         if(key == 32): # Space key  
             image = methods.capture_camera()
+            cv2.destroyAllWindows()
+            predict_and_display_image(image)
             break
 
         if(key == 27): # Space key
-            print("exiting...")
-            exit()
-
-
-    # Classify the image
-    ai_result = methods.classify_image(image)
-    print(ai_result["predictions"])
-
-    # Show image boundary
-    fig = methods.show_classification_boundary(image, ai_result, frame_size)
-    methods.show_img_from_fig(fig, frame_size) 
-
-
-    # Wait untill user presses key again to restart the process
-    while True:
-        key = cv2.waitKey(1)
-
-        if(key == 32): # Space key
+            methods.cap.release()
+            cv2.destroyAllWindows()
             break
 
-        if(key == 27): # Space key
-            print("exiting...")
-            exit()
-    cv2.destroyAllWindows()
-    continue # Repeat from the top of the program
+# Setup window
+window = tk.Tk()
+window.title("Image classifier")
+window.geometry("300x400")
+window.resizable(0,0)
 
-    methods.SendToApi([])
-    # Check if results contain any classes
-    Images = ["1","2"]
-    for i in Images:
-        trashItems = []
-        trashItems[trashItems.count()+1] = methods.CreateTrashObject()
+# Button frame
+top_frame = tk.Frame(window)
+top_frame.pack(side="top", fill="x")
+
+# Drag and drop image file
+
+
+# Setup file image button
+btn_file = tk.Button(top_frame, text="Open file...", command=open_image)
+btn_file.pack(side=tk.LEFT, fill="x", expand=True)
+
+# Setup live image button
+btn_live = tk.Button(top_frame, text="Open camera...", command=open_camera)
+btn_live.pack(side=tk.LEFT, fill="x", expand=True)
+
+panel = tk.Label(window)
+panel.pack(side="bottom")
+window.mainloop()
+
+exit()
+
+
+methods.SendToApi([])
+# Check if results contain any classes
+Images = ["1","2"]
+for i in Images:
+    trashItems = []
+    trashItems[trashItems.count()+1] = methods.CreateTrashObject()
+        

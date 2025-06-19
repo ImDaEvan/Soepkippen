@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import requests
 from inference_sdk import InferenceHTTPClient
+from PIL import Image, ImageTk
+
+global cap
+
+
 
 # Takes photo
 cap = cv2.VideoCapture(0)
@@ -17,14 +22,27 @@ def capture_camera():
         raise("Can't receive frame (stream end?). Exiting ...")
     else:
        return frame
+    
 
 # Displays the image
 def show_img_from_fig(fig, frame_size):
+    img = fig_to_img(fig, frame_size)
+    cv2.imshow('Live Feed', img)
+
+# cv2 to imageTK
+def cv2img_to_imgTK(cv2Img):
+    b,g,r = cv2.split(cv2Img)
+    img = cv2.merge((r,g,b))
+    img = Image.fromarray(img)
+    return ImageTk.PhotoImage(image=img)
+
+# Figure to image
+def fig_to_img(fig, frame_size):
     fig.canvas.draw()
     img_plot = np.array(fig.canvas.renderer.buffer_rgba())
     img = cv2.resize(cv2.cvtColor(img_plot, cv2.COLOR_RGBA2BGR), frame_size)
     
-    cv2.imshow('Live Feed', img)
+    return img
 
 
 # Ai looks for objects

@@ -4,7 +4,7 @@ import numpy as np
 import requests
 from inference_sdk import InferenceHTTPClient
 from PIL import Image, ImageTk
-
+from discord_webhook import DiscordEmbed,DiscordWebhook
 global cap
 
 
@@ -108,6 +108,19 @@ def show_classification_boundary(image, model_result, display_size=None):
     return fig
 
 
+
+def PredictionsToTrashItemList(predictions,image):
+    trashItems = []
+    for v in predictions:
+        #[{'x': 421.5, 'y': 358.5, 'width': 251.0, 'height': 241.0, 'confidence': 0.5407358407974243, 'class': 'Hands', 'class_id': 18, 'detection_id': '4c342206-1d61-44ca-8e8e-1623d73ba99c'}]
+        confidence = v['confidence']
+        trashtype = v['class']
+        
+        #trashItems[len(trashItems)] = CreateTrashObject("",type,confidence,"","")
+        trashItems.append(CreateTrashObject("",trashtype,confidence,"",""))
+    return trashItems
+
+
 def CreateTrashObject(timestamp,trashtype,confidence,longitude,latitude):
     trashItem = {
         "timestamp" :               timestamp, # date object parsed to string
@@ -120,12 +133,17 @@ def CreateTrashObject(timestamp,trashtype,confidence,longitude,latitude):
 
 
 def SendToApi(trashItems):
-    url = "http://5.189.173.122:8080";
+    url = "http://5.189.173.122:8080"
     api_key = open("apikey.txt").read().split(',')[1]
+
+    webhook = DiscordWebhook(url="https://discord.com/api/webhooks/1384960115274158240/aVAhNmaRVT-aR_OydhPMUH_mI81t8DRQdZilmnzSpU8Wy_migHj3DN9LpvQV40wo_uGt")
+    for v in trashItems:
+        print(v)
+        embed = DiscordEmbed(title=f"Trash item:{v['type']}", description=f"Timestamp:{v['timestamp']}\n Confidence score:{v['confidence']}\n Longitude:{v['longitude']}\n Latitude:{v['latitude']}",color="8efa46")
+        webhook.add_embed(embed)
+    
     jwt = requests.get(url + f"/api/Jwt?key={api_key}").text
-
     headers = {"Authorization": f"Bearer {jwt}"}
-
-    for l in trashItems:
-        for i in l:
-            print(i,l[i])
+    response = webhook.execute()
+    request = requests.post(url + "/api/trash",headers=headers,json=trashItems)
+    print(request.json)

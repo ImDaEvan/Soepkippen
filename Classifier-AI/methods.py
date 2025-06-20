@@ -177,6 +177,18 @@ def PredictionsToTrashItemList(predictions,location,timestamp):
     return trashItems
 
 
+# Generates dummy data
+def GenerateTrashItems(count, minute_offset_from_now):
+    trashItems = []
+    for _ in range(count):
+        trashItems.append(CreateTrashObject(
+            (datetime.datetime.now() + datetime.timedelta(hours=int(random.uniform(-minute_offset_from_now, 0)))).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            random.choice(["can", "cardboard", "cigarette_butt", "paper_cup", "pet_bottle", "plastic"]),
+            random.uniform(0.5, 0.99),
+            create_fake_location()
+        ))
+    return trashItems
+
 def CreateTrashObject(timestamp,trashtype,confidence,location):
     trashItem = {
         "timestamp" :               timestamp, # date object parsed to string
@@ -192,14 +204,14 @@ def SendToApi(trashItems):
     url = "http://5.189.173.122:8080"
     api_key = open("apikey.txt").read().split(',')[1]
 
-    webhook = DiscordWebhook(url="https://discord.com/api/webhooks/1384960115274158240/aVAhNmaRVT-aR_OydhPMUH_mI81t8DRQdZilmnzSpU8Wy_migHj3DN9LpvQV40wo_uGt")
-    for v in trashItems:
-        print(v)
-        embed = DiscordEmbed(title=f"Trash item:{v['type']}", description=f"Timestamp:{v['timestamp']}\n Confidence score:{v['confidence']}\n Longitude:{v['longitude']}\n Latitude:{v['latitude']}",color="8efa46")
-        webhook.add_embed(embed)
+    # webhook = DiscordWebhook(url="https://discord.com/api/webhooks/1384960115274158240/aVAhNmaRVT-aR_OydhPMUH_mI81t8DRQdZilmnzSpU8Wy_migHj3DN9LpvQV40wo_uGt")
+    # for v in trashItems:
+    #     print(v)
+    #     embed = DiscordEmbed(title=f"Trash item:{v['type']}", description=f"Timestamp:{v['timestamp']}\n Confidence score:{v['confidence']}\n Longitude:{v['longitude']}\n Latitude:{v['latitude']}",color="8efa46")
+    #     webhook.add_embed(embed)
     
     jwt = requests.get(url + f"/api/Jwt?key={api_key}").text
     headers = {"Authorization": f"Bearer {jwt}"}
-    response = webhook.execute()
+    #response = webhook.execute()
     request = requests.post(url + "/api/trash",headers=headers,json=trashItems)
     print(request.json)

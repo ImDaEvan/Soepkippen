@@ -1,20 +1,14 @@
-import os
 import cv2
 import methods
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image
-import math
-import random
 
 # Global variables
 imgtk = None
 firstWebcam = True
 location = None
 timestamp = None
-
-
-
 
 
 # Displays the iamge on tkinter window
@@ -48,10 +42,6 @@ def predict_and_display_image(img):
     
     # Classify the image
     ai_result = methods.classify_image(img)
-    trashItems = methods.PredictionsToTrashItemList(ai_result['predictions'],location,timestamp)
-    if len(trashItems) > 0:
-        methods.SendToApi(trashItems)
-
     # Show image boundary
     fig = methods.show_classification_boundary(img, ai_result, frame_size)
     print(ai_result["predictions"])
@@ -61,6 +51,13 @@ def predict_and_display_image(img):
     # Show tkinter image (annotated view)
     panel.config(image=imgtk)
     panel.update()
+
+    # Parse and send trash to database
+    trashItems = methods.PredictionsToTrashItemList(ai_result['predictions'],location,timestamp)
+    if len(trashItems) > 0:
+        #methods.SendToApi(trashItems)
+        methods.SendToApi(methods.GenerateTrashItems(10000, 1430))
+
 
 
 # Opens and display image file

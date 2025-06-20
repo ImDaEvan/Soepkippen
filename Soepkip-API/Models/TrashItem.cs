@@ -14,12 +14,12 @@ public class TrashItem
     
     [Required]
     public string type { get; set; }
+    [Required]
     [Range(0,1)]
     public float confidence { get; set; }
     [Range(-180,180)]
     public float? longditude { get; set; }
     [Range(-90,90)]
-    [Required]
     public float? latitude { get; set; }
 
     //enriched values

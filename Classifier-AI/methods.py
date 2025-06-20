@@ -1,11 +1,13 @@
 import cv2
-import geopy.location
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
 from inference_sdk import InferenceHTTPClient
 from PIL import Image, ImageTk, ExifTags
 from discord_webhook import DiscordEmbed,DiscordWebhook
+import random
+import datetime
+import time
 global cap
 
 # Takes photo
@@ -46,19 +48,21 @@ def fig_to_img(fig, frame_size):
     return img
 
 # Gets position data from image
-def get_lonlat_from_photo(img):
+def get_spacetime_from_photo(img):
     try:
         exif_data = img._getexif()
-
+    
         if not exif_data:
-            return None
-
+            return (None, None, None)
+        
         # Map exif tag numbers to tag names
         exif = {
             ExifTags.TAGS.get(tag): value
             for tag, value in exif_data.items()
             if tag in ExifTags.TAGS
         }
+
+        timestamp = exif["DateTime"]
 
         gps_info = exif.get("GPSInfo")
         if not gps_info:
@@ -84,7 +88,7 @@ def get_lonlat_from_photo(img):
         if lon_ref != 'E':
             lon = -lon
 
-        return lat, lon
+        return lat, lon, timestamp
     except:
         return None
 
@@ -145,46 +149,40 @@ def show_classification_boundary(image, model_result, display_size):
     return fig
 
 def create_fake_location():
-    #benthes deel
-    lon,lat = None
-    print("not implemented")
-    return lon,lat
+    lon = random.uniform(51.607389,51.564873)
+    lat = random.uniform(4.727335,4.819141)
+    location = (lon, lat)
+    return location
 
-def PredictionsToTrashItemList(predictions,image):
+def get_current_time():
+    ts = time.time()
+    dt = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    #2025-10-12T01:00:00.000Z
+    return dt
+
+def PredictionsToTrashItemList(predictions,location,timestamp):
     trashItems = []
-    lon,lat = get_lonlat_from_photo(image)
-    if lon == None or lat == None:
-        lon,lat = create_fake_location()
+    if location == None:
+        location = create_fake_location()
+    if timestamp == None:
+        timestamp = get_current_time()
     for v in predictions:
         #[{'x': 421.5, 'y': 358.5, 'width': 251.0, 'height': 241.0, 'confidence': 0.5407358407974243, 'class': 'Hands', 'class_id': 18, 'detection_id': '4c342206-1d61-44ca-8e8e-1623d73ba99c'}]
         confidence = v['confidence']
         trashtype = v['class']
         
         #trashItems[len(trashItems)] = CreateTrashObject("",type,confidence,"","")
-        trashItems.append(CreateTrashObject("",trashtype,confidence,lon,lat))
+        trashItems.append(CreateTrashObject(timestamp,trashtype,confidence,location))
     return trashItems
 
 
-
-def PredictionsToTrashItemList(predictions,image):
-    trashItems = []
-    for v in predictions:
-        #[{'x': 421.5, 'y': 358.5, 'width': 251.0, 'height': 241.0, 'confidence': 0.5407358407974243, 'class': 'Hands', 'class_id': 18, 'detection_id': '4c342206-1d61-44ca-8e8e-1623d73ba99c'}]
-        confidence = v['confidence']
-        trashtype = v['class']
-        
-        #trashItems[len(trashItems)] = CreateTrashObject("",type,confidence,"","")
-        trashItems.append(CreateTrashObject("",trashtype,confidence,"",""))
-    return trashItems
-
-
-def CreateTrashObject(timestamp,trashtype,confidence,longitude,latitude):
+def CreateTrashObject(timestamp,trashtype,confidence,location):
     trashItem = {
         "timestamp" :               timestamp, # date object parsed to string
         "type":                     trashtype, # STRING
         "confidence":               confidence, # FLOAT
-        "longitude":                longitude, # FLOAT
-        "latitude":                 latitude, # FLOAT
+        "longitude":                location[0], # FLOAT
+        "latitude":                 location[1], # FLOAT
     }
     return trashItem
 

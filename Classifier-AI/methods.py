@@ -190,7 +190,6 @@ def CreateTrashObject(timestamp,trashtype,confidence,location):
 
 def SendToApi(trashItems):
     url = "http://5.189.173.122:8080"
-    url = "http://localhost:5267"
     api_key = open("apikey.txt").read().split(',')[1]
 
     webhook = DiscordWebhook(url="https://discord.com/api/webhooks/1384960115274158240/aVAhNmaRVT-aR_OydhPMUH_mI81t8DRQdZilmnzSpU8Wy_migHj3DN9LpvQV40wo_uGt")

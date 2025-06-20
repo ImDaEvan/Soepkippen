@@ -66,34 +66,36 @@ public class TrashController : Controller
     // POST: api/trash
     [Authorize(AuthenticationSchemes = "sensoring")]
     [HttpPost]
-    public async Task<IActionResult> Write([FromBody] TrashItem trash)
+    public async Task<IActionResult> Write([FromBody] List<TrashItem> trashItems)
     {
         try
         {
-            //Only enrich data if there's a location
-            if (trash.longditude != null && trash.latitude != null)
+            foreach (var trashItem in trashItems)
             {
-                // Enrich trash data with weather info
-                var weather = await _weatherService.GetWeatherAsync((float)trash.longditude, (float)trash.latitude);
-
-                if (weather != null)
+                //Only enrich data if there's a location
+                if (trashItem.longditude != null && trashItem.latitude != null)
                 {
-                    trash.actual_temp_celsius = weather.Temp;
-                    trash.feels_like_temp_celsius = weather.GTemp;
-                    trash.wind_force_bft = weather.WindBft;
-                    trash.wind_direction = weather.WindrGr;
-                    trash.weather_timestamp = weather.ParsedTime;
+                    // Enrich trash data with weather info
+                    var weather = await _weatherService.GetWeatherAsync((float)trashItem.longditude, (float)trashItem.latitude);
+
+                    if (weather != null)
+                    {
+                        trashItem.actual_temp_celsius = weather.Temp;
+                        trashItem.feels_like_temp_celsius = weather.GTemp;
+                        trashItem.wind_force_bft = weather.WindBft;
+                        trashItem.wind_direction = weather.WindrGr;
+                        trashItem.weather_timestamp = weather.ParsedTime;
+                    }
                 }
+
+                //test change
+                _trashRepository.Write(trashItems);
+
+
             }
-
-            //test change
-            _trashRepository.Write(trash);
-
-
             var rowsAffected = await _trashRepository.SaveChangesAsync();
             if (rowsAffected == 0)
                 throw new("Writing trash to the context resulted in nothing happening");
-
             return Ok(rowsAffected);
         }
         catch (Exception e)

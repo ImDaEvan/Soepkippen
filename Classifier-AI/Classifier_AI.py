@@ -101,6 +101,4 @@ window.mainloop()
 
 exit()
 
-
-methods.SendToApi([])
 # Check if results contain any classes

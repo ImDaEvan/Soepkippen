@@ -12,6 +12,8 @@ firstWebcam = True
 location = None
 datetime = None
 
+
+
 # Displays the iamge on tkinter window
 def predict_and_display_image(img):
     global imgtk, panel, window
@@ -43,6 +45,9 @@ def predict_and_display_image(img):
     
     # Classify the image
     ai_result = methods.classify_image(img)
+    trashItems = methods.PredictionsToTrashItemList(ai_result['predictions'],img)
+    if len(trashItems) > 0:
+        methods.SendToApi(trashItems)
 
     # Show image boundary
     fig = methods.show_classification_boundary(img, ai_result, frame_size)
@@ -130,8 +135,3 @@ exit()
 
 methods.SendToApi([])
 # Check if results contain any classes
-Images = ["1","2"]
-for i in Images:
-    trashItems = []
-    trashItems[trashItems.count()+1] = methods.CreateTrashObject()
-        

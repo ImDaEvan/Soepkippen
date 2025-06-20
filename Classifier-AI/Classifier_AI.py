@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image
 import math
+import random
 
 # Global variables
 imgtk = None
@@ -72,7 +73,8 @@ def open_image():
         # Get position from image
         img = Image.open(image_path)
         location = methods.get_lonlat_from_photo(img)
-
+        #TODO als lonlat = None, dan random lonlat tussen (51.607388, 4.727335) en (51.564873, 4.81941)
+        
         # Classify and display classifications
         predict_and_display_image(pic)
 

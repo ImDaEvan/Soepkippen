@@ -1,5 +1,4 @@
 import cv2
-import geopy.location
 import matplotlib.pyplot as plt
 import numpy as np
 import requests

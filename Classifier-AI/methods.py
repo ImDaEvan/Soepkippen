@@ -178,11 +178,11 @@ def PredictionsToTrashItemList(predictions,location,timestamp):
 
 
 # Generates dummy data
-def GenerateTrashItems(count, minute_offset_from_now):
+def GenerateTrashItems(count, hour_offset_from_now):
     trashItems = []
     for _ in range(count):
         trashItems.append(CreateTrashObject(
-            (datetime.datetime.now() + datetime.timedelta(hours=int(random.uniform(-minute_offset_from_now, 0)))).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
+            (datetime.datetime.now() + datetime.timedelta(hours=int(random.uniform(hour_offset_from_now, 0)))).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z',
             random.choice(["can", "cardboard", "cigarette_butt", "paper_cup", "pet_bottle", "plastic"]),
             random.uniform(0.5, 0.99),
             create_fake_location()

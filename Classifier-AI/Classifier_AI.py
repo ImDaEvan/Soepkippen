@@ -55,8 +55,8 @@ def predict_and_display_image(img):
     # Parse and send trash to database
     trashItems = methods.PredictionsToTrashItemList(ai_result['predictions'],location,timestamp)
     if len(trashItems) > 0:
-        #methods.SendToApi(trashItems)
-        methods.SendToApi(methods.GenerateTrashItems(10000, 1430))
+        methods.SendToApi(trashItems)
+        # methods.SendToApi(methods.GenerateTrashItems(10000, -1430)) # -2 months
 
 
 

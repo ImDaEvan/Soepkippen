@@ -89,7 +89,7 @@ public class TrashController : Controller
                 }
 
                 //test change
-                _trashRepository.Write(trashItems);
+                _trashRepository.Write(trashItem);
 
 
             }

@@ -14,6 +14,8 @@ datetime = None
 
 
 
+
+
 # Displays the iamge on tkinter window
 def predict_and_display_image(img):
     global imgtk, panel, window
@@ -132,6 +134,4 @@ window.mainloop()
 
 exit()
 
-
-methods.SendToApi([])
 # Check if results contain any classes

@@ -6,7 +6,6 @@ namespace SoepkipAPI.Models;
 
 public class TrashItem
 {
-    [Key]
     public string id { get; set; } = Guid.NewGuid().ToString();
     
     [Required]

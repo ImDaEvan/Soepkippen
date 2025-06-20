@@ -63,10 +63,12 @@ def get_spacetime_from_photo(img):
         }
 
         timestamp = exif["DateTime"]
+        timestamp = datetime.datetime.strptime(timestamp, '%Y:%m:%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+
 
         gps_info = exif.get("GPSInfo")
         if not gps_info:
-            return None
+            return (None, None, None)
 
         # map GPSInfo keys from integers to names
         gps_tags = {}
@@ -90,7 +92,7 @@ def get_spacetime_from_photo(img):
 
         return lat, lon, timestamp
     except:
-        return None
+        return (None, None, None)
 
 # Ai looks for objects
 def classify_image(image):
@@ -156,13 +158,12 @@ def create_fake_location():
 
 def get_current_time():
     ts = time.time()
-    dt = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    #2025-10-12T01:00:00.000Z
+    dt = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
     return dt
 
 def PredictionsToTrashItemList(predictions,location,timestamp):
     trashItems = []
-    if location == None:
+    if location == None or location == (None, None):
         location = create_fake_location()
     if timestamp == None:
         timestamp = get_current_time()
@@ -189,6 +190,7 @@ def CreateTrashObject(timestamp,trashtype,confidence,location):
 
 def SendToApi(trashItems):
     url = "http://5.189.173.122:8080"
+    url = "http://localhost:5267"
     api_key = open("apikey.txt").read().split(',')[1]
 
     webhook = DiscordWebhook(url="https://discord.com/api/webhooks/1384960115274158240/aVAhNmaRVT-aR_OydhPMUH_mI81t8DRQdZilmnzSpU8Wy_migHj3DN9LpvQV40wo_uGt")

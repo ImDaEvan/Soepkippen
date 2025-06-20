@@ -37,6 +37,7 @@ public class TrashController : Controller
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public IActionResult GetTrash([FromQuery] string dateLeft, [FromQuery] string dateRight)
     {
+        start:
         try
         {
             if (!_trashRepository.TryParseIsoUtc(dateLeft, out var from)) // Fixed by removing the incorrect static call
@@ -56,9 +57,15 @@ public class TrashController : Controller
 
             return Ok(detections);
         }
-        catch
+        catch (Exception e)
         {
-            _logger.LogError("An error occurred while retrieving trash detections.");
+            if (e.Message.ToLower().Contains("timeout"))
+            {
+                _logger.LogWarning("Timeout, retry");
+                goto start;
+            }
+            
+            _logger.LogError($"{e.Message}\n{e.InnerException}");
             return BadRequest("An error occurred while processing your request.");
         }
     }
@@ -68,15 +75,16 @@ public class TrashController : Controller
     [HttpPost]
     public async Task<IActionResult> Write([FromBody] List<TrashItem> trashItems)
     {
+        start:
         try
         {
             foreach (var trashItem in trashItems)
             {
                 //Only enrich data if there's a location
-                if (trashItem.longditude != null && trashItem.latitude != null)
+                if (trashItem.longitude != null && trashItem.latitude != null)
                 {
                     // Enrich trash data with weather info
-                    var weather = await _weatherService.GetWeatherAsync((float)trashItem.longditude, (float)trashItem.latitude);
+                    var weather = await _weatherService.GetWeatherAsync((float)trashItem.longitude, (float)trashItem.latitude);
 
                     if (weather != null)
                     {
@@ -100,6 +108,12 @@ public class TrashController : Controller
         }
         catch (Exception e)
         {
+            if (e.Message.ToLower().Contains("timeout"))
+            {
+                _logger.LogWarning("Timeout, retry");
+                goto start;
+            }
+            
             _logger.LogError($"{e.Message}\n{e.InnerException}");
             return BadRequest($"Something went wrong: {e.Message}");
         }

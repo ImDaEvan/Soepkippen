@@ -11,7 +11,7 @@ import random
 imgtk = None
 firstWebcam = True
 location = None
-datetime = None
+timestamp = None
 
 
 
@@ -48,7 +48,7 @@ def predict_and_display_image(img):
     
     # Classify the image
     ai_result = methods.classify_image(img)
-    trashItems = methods.PredictionsToTrashItemList(ai_result['predictions'],img)
+    trashItems = methods.PredictionsToTrashItemList(ai_result['predictions'],location,timestamp)
     if len(trashItems) > 0:
         methods.SendToApi(trashItems)
 
@@ -65,7 +65,7 @@ def predict_and_display_image(img):
 
 # Opens and display image file
 def open_image():
-    global location
+    global location,timestamp
     image_path = filedialog.askopenfilename(title="Select Image File", filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp *.ico *.webp")])
 
     if(image_path != ""):
@@ -74,9 +74,9 @@ def open_image():
 
         # Get position from image
         img = Image.open(image_path)
-        location = methods.get_lonlat_from_photo(img)
-        #TODO als lonlat = None, dan random lonlat tussen (51.607388, 4.727335) en (51.564873, 4.81941)
-        
+        lon, lat, timestamp = methods.get_spacetime_from_photo(img)
+        location = (lon, lat)
+
         # Classify and display classifications
         predict_and_display_image(pic)
 

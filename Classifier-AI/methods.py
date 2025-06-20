@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import requests
 from inference_sdk import InferenceHTTPClient
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ExifTags
 from discord_webhook import DiscordEmbed,DiscordWebhook
 global cap
 

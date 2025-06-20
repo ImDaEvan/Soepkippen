@@ -18,7 +18,7 @@ public class TrashItem
     [Range(0,1)]
     public float confidence { get; set; }
     [Range(-180,180)]
-    public float? longditude { get; set; }
+    public float? longitude { get; set; }
     [Range(-90,90)]
     public float? latitude { get; set; }
 

@@ -2,7 +2,7 @@
 
 env: # Change these settings when you need to
   ARTIFACT_NAME: WebApi
-  DOTNET_CORE_VERSION: 9.0.x #Tests are 9.0, api is 8.0
+  DOTNET_CORE_VERSION: 8.0.x
   PUBLISH_DIRECTORY: "./out/publish"
 on:
   push:
@@ -21,9 +21,8 @@ jobs:
           dotnet-version: ${{env.DOTNET_CORE_VERSION}}
 
       - name: Test
-        with: 
-          context: ./Soepkip-API.tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test ./Soepkip-API.tests --no-build --verbosity normal
+
         
   build:
     runs-on: ubuntu-latest

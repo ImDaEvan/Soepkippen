@@ -16,6 +16,7 @@ namespace SoepkipAPI.tests
         private const string ISO = "yyyy-MM-dd'T'HH:mm:ss.fff'Z'";
         private Mock<ITrashRepository> _repo = null!;
         private Mock<ILogger<TrashController>> _log = null!;
+        private Mock<IWeatherService> _weatherService = null!;
         private TrashController _sut = null!;
 
         [TestInitialize]
@@ -24,6 +25,7 @@ namespace SoepkipAPI.tests
             _repo = new Mock<ITrashRepository>(MockBehavior.Strict);
             _log = new Mock<ILogger<TrashController>>();
             _sut = new TrashController(_repo.Object, _log.Object, weatherService: null!);
+            _weatherService = new Mock<IWeatherService>();
         }
 
         [TestMethod]
@@ -96,6 +98,63 @@ namespace SoepkipAPI.tests
             var payload = ok.Value as IEnumerable<TrashItem>;
             Assert.IsNotNull(payload, "Payload should be a list.");
             Assert.AreEqual(0, payload.Count(), "List should be empty.");
+        }
+
+        [TestMethod]
+        public async Task ValidPost_ReturnsData_WithWeatherAsync()
+        {
+            //Arrange
+            var trash = new TrashItem
+            {
+                id = "1",
+                timestamp = DateTime.UtcNow,
+                type = "cardboard",
+                confidence = 0.84f,
+                longitude = 51.58656f,
+                latitude = 4.77596f,
+            };
+
+            var responseWeather = new WeatherData
+            {
+                Plaats = "Breda",
+                Temp = 21.1f,
+                GTemp = 22.1f,
+                WindrGr = 28.5f,
+                WindMs = 8.3f,
+                WindBft = 4.0f,
+                Time = "12-06-2025 16:03",
+                Timestamp = "1749736980"
+            };
+
+            _weatherService.Setup(w => w.GetWeatherAsync((float)trash.longitude, (float)trash.latitude)).ReturnsAsync(responseWeather);
+
+            _repo.Setup(r => r.Write(It.IsAny<TrashItem>()));
+            _repo.Setup(r => r.SaveChangesAsync()).ReturnsAsync(1);
+
+            _sut = new TrashController(_repo.Object, _log.Object, _weatherService.Object);
+
+            // Act
+            var result = await _sut.Write(new List<TrashItem> { trash });
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult, "Expected OkObjectResult");
+            Assert.AreEqual(1, okResult.Value, "Expected 1 row affected");
+
+            _weatherService.Verify(w =>
+                w.GetWeatherAsync((float)trash.longitude, (float)trash.latitude),
+                Times.Once);
+
+            _repo.Verify(r => r.Write(It.Is<TrashItem>(t =>
+                t.actual_temp_celsius == responseWeather.Temp &&
+                t.feels_like_temp_celsius == responseWeather.GTemp &&
+                t.wind_force_bft == responseWeather.WindBft &&
+                t.wind_direction == responseWeather.WindrGr &&
+                t.weather_timestamp == responseWeather.ParsedTime
+            )), Times.Once);
+
+            _repo.Verify(r => r.SaveChangesAsync(), Times.Once);
+
         }
     }
 }

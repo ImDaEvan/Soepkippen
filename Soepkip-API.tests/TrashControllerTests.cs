@@ -156,5 +156,77 @@ namespace SoepkipAPI.tests
             _repo.Verify(r => r.SaveChangesAsync(), Times.Once);
 
         }
+
+        [TestMethod]
+        public async Task ValidPost_NoRowsAffected_ReturnsBadRequest()
+        {
+            //Arrange
+            var trash = new TrashItem
+            {
+                id = "1",
+                timestamp = DateTime.UtcNow,
+                type = "cardboard",
+                confidence = 0.84f,
+                longitude = 51.58656f,
+                latitude = 4.77596f,
+            };
+
+            var responseWeather = new WeatherData
+            {
+                Plaats = "Breda",
+                Temp = 21.1f,
+                GTemp = 22.1f,
+                WindrGr = 28.5f,
+                WindMs = 8.3f,
+                WindBft = 4.0f,
+                Time = "12-06-2025 16:03",
+                Timestamp = "1749736980"
+            };
+
+            _weatherService.Setup(w => w.GetWeatherAsync((float)trash.longitude, (float)trash.latitude))
+                .ReturnsAsync(responseWeather);
+
+            _repo.Setup(r => r.Write(It.IsAny<TrashItem>()));
+            _repo.Setup(r => r.SaveChangesAsync()).ReturnsAsync(0);
+
+            _sut = new TrashController(_repo.Object, _log.Object, _weatherService.Object);
+
+            // Act
+            var result = await _sut.Write(new List<TrashItem> { trash });
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            var badRequest = result as BadRequestObjectResult;
+            Assert.IsTrue(badRequest!.Value!.ToString()!.Contains("Writing trash to the context resulted in nothing happening"));
+        }
+
+        [TestMethod]
+        public async Task Post_WeatherServiceThrowsException_ReturnsBadRequest()
+        {
+            // Arrange
+            var trash = new TrashItem
+            {
+                id = "1",
+                timestamp = DateTime.UtcNow,
+                type = "cardboard",
+                confidence = 0.84f,
+                longitude = 51.58656f,
+                latitude = 4.77596f,
+            };
+
+            _weatherService.Setup(w => w.GetWeatherAsync((float)trash.longitude, (float)trash.latitude))
+                .ThrowsAsync(new Exception("Weather API failure"));
+
+            _sut = new TrashController(_repo.Object, _log.Object, _weatherService.Object);
+
+            // Act
+            var result = await _sut.Write(new List<TrashItem> { trash });
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+            var badRequest = result as BadRequestObjectResult;
+            Assert.IsTrue(badRequest!.Value!.ToString()!.Contains("Something went wrong"));
+        }
+
     }
 }
